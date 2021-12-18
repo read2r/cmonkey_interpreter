@@ -1,7 +1,8 @@
 #ifndef __TOKEN_H__
 #define __TOKEN_H__
+#define BASIC_STR_SIZE 128 
 
-typedef int TokenType;
+typedef char* TokenType;
 
 typedef struct _Token {
     TokenType type;
@@ -9,25 +10,28 @@ typedef struct _Token {
 } Token;
 
 enum {
-    TOKEN_ILLEGA = 0,
-    TOKEN_EOF,
+    TAG_ILLEGAL = 0,
+    TAG_EOF,
 
-    TOKEN_IDENT,
-    TOKEN_INT,
+    TAG_IDENT,
+    TAG_INT,
 
-    TOKEN_ASSIGN,
-    TOKEN_PLUS,
+    TAG_ASSIGN,
+    TAG_PLUS,
 
-    TOKEN_COMMA,
-    TOKEN_SEMICOLON,
+    TAG_COMMA,
+    TAG_SEMICOLON,
 
-    TOKEN_LPAREN,
-    TOKEN_RPAREN,
-    TOKEN_LBRACE,
-    TOKEN_RBRACE,
+    TAG_LPAREN,
+    TAG_RPAREN,
+    TAG_LBRACE,
+    TAG_RBRACE,
 
-    TOKEN_FUNCTION,
-    TOKEN_LET,
+    TAG_FUNCTION,
+    TAG_LET,
 };
+
+TokenType TOKENTYPES[100];
+void InitializeToken();
 
 #endif

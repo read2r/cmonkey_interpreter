@@ -28,31 +28,31 @@ Token* nextToken(Lexer* l) {
 
     switch(l->ch) {
     case '=':
-        tok = newToken(TOKEN_ASSIGN, l->ch);
+        tok = newToken(TOKENTYPES[TAG_ASSIGN], l->ch);
         break;
     case';':
-        tok = newToken(TOKEN_SEMICOLON, l->ch);
+        tok = newToken(TOKENTYPES[TAG_SEMICOLON], l->ch);
         break;
     case'(':
-        tok = newToken(TOKEN_LPAREN, l->ch);
+        tok = newToken(TOKENTYPES[TAG_LPAREN], l->ch);
         break;
     case')':
-        tok = newToken(TOKEN_RPAREN, l->ch);
+        tok = newToken(TOKENTYPES[TAG_RPAREN], l->ch);
         break;
     case',':
-        tok = newToken(TOKEN_COMMA, l->ch);
+        tok = newToken(TOKENTYPES[TAG_COMMA], l->ch);
         break;
     case'+':
-        tok = newToken(TOKEN_PLUS, l->ch);
+        tok = newToken(TOKENTYPES[TAG_PLUS], l->ch);
         break;
     case'{':
-        tok = newToken(TOKEN_LBRACE, l->ch);
+        tok = newToken(TOKENTYPES[TAG_LBRACE], l->ch);
         break;
     case'}':
-        tok = newToken(TOKEN_RBRACE, l->ch);
+        tok = newToken(TOKENTYPES[TAG_RBRACE], l->ch);
         break;
     case 0:
-        tok = newToken(TOKEN_EOF, ' ');
+        tok = newToken(TOKENTYPES[TAG_EOF], ' ');
         break;
     }
 
