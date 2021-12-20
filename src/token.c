@@ -1,38 +1,55 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "token.h"
 
-void InitializeToken() {
-    for(int i = 0; i < 14; i++) {
-        TOKENTYPES[i] = (TokenType)malloc(BASIC_STR_SIZE);
-    }
+void appendTokenType(TokenTypeCode typeCode, const char* literal) {
+    TOKENTYPES[typeCode] = (TokenType)malloc(sizeof(char) * STR_SIZE);
+    memcpy(TOKENTYPES[typeCode], literal, sizeof(char) * STR_SIZE);
+}
 
-    // ILLEGAL
-    memcpy(TOKENTYPES[TAG_ILLEGAL], "ILLEGAL", BASIC_STR_SIZE);
-    // EOF
-    memcpy(TOKENTYPES[TAG_EOF], "EOF", BASIC_STR_SIZE);
-    // IDENT
-    memcpy(TOKENTYPES[TAG_IDENT], "IDENT", BASIC_STR_SIZE);
-    // INT
-    memcpy(TOKENTYPES[TAG_INT], "INT", BASIC_STR_SIZE);
-    // ASSIGN
-    memcpy(TOKENTYPES[TAG_ASSIGN], "=", BASIC_STR_SIZE);
-    // PLUS
-    memcpy(TOKENTYPES[TAG_PLUS], "+", BASIC_STR_SIZE);
-    // COMMA
-    memcpy(TOKENTYPES[TAG_COMMA], ",", BASIC_STR_SIZE);
-    // SEMICOLON
-    memcpy(TOKENTYPES[TAG_SEMICOLON], ";", BASIC_STR_SIZE);
-    // LPAREN
-    memcpy(TOKENTYPES[TAG_LPAREN], "(", BASIC_STR_SIZE);
-    // RPAREN
-    memcpy(TOKENTYPES[TAG_RPAREN], ")", BASIC_STR_SIZE);
-    // LBRACE
-    memcpy(TOKENTYPES[TAG_LBRACE], "{", BASIC_STR_SIZE);
-    // RBRACE
-    memcpy(TOKENTYPES[TAG_RBRACE], "}", BASIC_STR_SIZE);
-    // FUNCTION
-    memcpy(TOKENTYPES[TAG_FUNCTION], "FUNCTION", BASIC_STR_SIZE);
-    // LET
-    memcpy(TOKENTYPES[TAG_LET], "LET", BASIC_STR_SIZE);
+void InitializeTokenTypes() {
+    appendTokenType(CODE_ILLEGAL, "ILLEGAL");
+    appendTokenType(CODE_EOF, "EOF");
+    appendTokenType(CODE_IDENT, "IDENT");
+    appendTokenType(CODE_INT, "INT");
+    appendTokenType(CODE_ASSIGN, "=");
+    appendTokenType(CODE_PLUS, "+");
+    appendTokenType(CODE_COMMA, ",");
+    appendTokenType(CODE_SEMICOLON, ";");
+    appendTokenType(CODE_LPAREN, "(");
+    appendTokenType(CODE_RPAREN, ")");
+    appendTokenType(CODE_LBRACE, "{");
+    appendTokenType(CODE_RBRACE, "}");
+    appendTokenType(CODE_FUNCTION, "FUNCTION");
+    appendTokenType(CODE_LET, "LET");
+}
+
+Keyword* newKeyword(TokenTypeCode typeCode, const char* literal) {
+    Keyword* temp = (Keyword*)malloc(sizeof(Keyword));
+    temp->typeCode = typeCode;
+    temp->literal = (char*)malloc(sizeof(char) * STR_SIZE);
+    memcpy(temp->literal, literal, STR_SIZE);
+    return temp;
+}
+
+void appendKeyword(TokenTypeCode typeCode, const char* literal) {
+    KEYWORDS->arr[KEYWORDS->len] = newKeyword(typeCode, literal);
+    KEYWORDS->len++;
+}
+
+void InitializeKeywords() {
+    KEYWORDS = (Keywords*)malloc(sizeof(Keywords));
+    appendKeyword(CODE_FUNCTION, "fn");
+    appendKeyword(CODE_LET, "let");
+}
+
+TokenType LookupIdent(char* ident) {
+    for(int i = 0; i < KEYWORDS->len; i++) {
+        Keyword* keyword = KEYWORDS->arr[i];
+        if(!strcmp(keyword->literal, ident)) {
+            return TOKENTYPES[keyword->typeCode];
+        }
+    }
+    return TOKENTYPES[CODE_IDENT];
 }

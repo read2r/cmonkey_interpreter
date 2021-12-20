@@ -1,37 +1,55 @@
 #ifndef __TOKEN_H__
 #define __TOKEN_H__
-#define BASIC_STR_SIZE 128 
+
+#define STR_SIZE 128 
+#define TOKENTYPES_LEN 100
+#define KEYWORDS_LEN 100
 
 typedef char* TokenType;
+typedef int TokenTypeCode;
 
 typedef struct _Token {
     TokenType type;
     char* literal;
 } Token;
 
+typedef struct _Keyword {
+    TokenTypeCode typeCode;
+    char* literal;
+} Keyword;
+
+typedef struct _Keywords {
+    int len;
+    Keyword* arr[KEYWORDS_LEN];
+} Keywords;
+
 enum {
-    TAG_ILLEGAL = 0,
-    TAG_EOF,
+    CODE_ILLEGAL = 0,
+    CODE_EOF,
 
-    TAG_IDENT,
-    TAG_INT,
+    CODE_IDENT,
+    CODE_INT,
 
-    TAG_ASSIGN,
-    TAG_PLUS,
+    CODE_ASSIGN,
+    CODE_PLUS,
 
-    TAG_COMMA,
-    TAG_SEMICOLON,
+    CODE_COMMA,
+    CODE_SEMICOLON,
 
-    TAG_LPAREN,
-    TAG_RPAREN,
-    TAG_LBRACE,
-    TAG_RBRACE,
+    CODE_LPAREN,
+    CODE_RPAREN,
+    CODE_LBRACE,
+    CODE_RBRACE,
 
-    TAG_FUNCTION,
-    TAG_LET,
+    CODE_FUNCTION,
+    CODE_LET,
 };
 
-TokenType TOKENTYPES[100];
-void InitializeToken();
+TokenType TOKENTYPES[TOKENTYPES_LEN];
+Keywords* KEYWORDS;
+
+void InitializeTokenTypes();
+void InitializeKeywords();
+TokenType LookupIdent(char* ident);
 
 #endif

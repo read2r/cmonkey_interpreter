@@ -28,32 +28,46 @@ Token* nextToken(Lexer* l) {
 
     switch(l->ch) {
     case '=':
-        tok = newToken(TOKENTYPES[TAG_ASSIGN], l->ch);
+        tok = newToken(TOKENTYPES[CODE_ASSIGN], l->ch);
         break;
     case';':
-        tok = newToken(TOKENTYPES[TAG_SEMICOLON], l->ch);
+        tok = newToken(TOKENTYPES[CODE_SEMICOLON], l->ch);
         break;
     case'(':
-        tok = newToken(TOKENTYPES[TAG_LPAREN], l->ch);
+        tok = newToken(TOKENTYPES[CODE_LPAREN], l->ch);
         break;
     case')':
-        tok = newToken(TOKENTYPES[TAG_RPAREN], l->ch);
+        tok = newToken(TOKENTYPES[CODE_RPAREN], l->ch);
         break;
     case',':
-        tok = newToken(TOKENTYPES[TAG_COMMA], l->ch);
+        tok = newToken(TOKENTYPES[CODE_COMMA], l->ch);
         break;
     case'+':
-        tok = newToken(TOKENTYPES[TAG_PLUS], l->ch);
+        tok = newToken(TOKENTYPES[CODE_PLUS], l->ch);
         break;
     case'{':
-        tok = newToken(TOKENTYPES[TAG_LBRACE], l->ch);
+        tok = newToken(TOKENTYPES[CODE_LBRACE], l->ch);
         break;
     case'}':
-        tok = newToken(TOKENTYPES[TAG_RBRACE], l->ch);
+        tok = newToken(TOKENTYPES[CODE_RBRACE], l->ch);
         break;
     case 0:
-        tok = newToken(TOKENTYPES[TAG_EOF], ' ');
+        tok = newToken(TOKENTYPES[CODE_EOF], ' ');
         break;
+    default:
+        if(isLetter(l->ch)) {
+            tok = (Token*)malloc(sizeof(Token));
+            tok->literal = readIdentifier(l);
+            tok->type = LookupIdent(tok->literal);
+            return tok;
+        } else if(isDigit(l->ch)) {
+            tok = (Token*)malloc(sizeof(Token));
+            tok->type = TOKENTYPES[CODE_INT];
+            tok->literal = readNumber(l);
+            return tok;
+        } else {
+            tok = newToken(TOKENTYPES[CODE_ILLEGAL], l->ch);
+        }
     }
 
     readChar(l);
@@ -73,4 +87,42 @@ void skipWhitespace(Lexer *l) {
     while(l->ch == ' ' || l->ch == '\t' || l->ch == '\n' || l->ch == '\r') {
         readChar(l);
     }
+}
+
+char* readIdentifier(Lexer* l) {
+    int start, end, len;
+    start = l->position;
+    while(isLetter(l->ch)) {
+        readChar(l);
+    }
+    end = l->position;
+    len = end - start;
+
+    char* ident = (char*)malloc(sizeof(char) * len + 1);
+    memcpy(ident, (l->input + start), sizeof(char) * len);
+    ident[len] = '\0';
+    return ident;
+}
+
+int isLetter(char ch) {
+    return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || ch == '_';
+}
+
+char* readNumber(Lexer* l) {
+    int start, end, len;
+    start = l->position;
+    while(isDigit(l->ch)) {
+        readChar(l);
+    }
+    end = l->position;
+    len = end - start;
+
+    char* number = (char*)malloc(sizeof(char) * len + 1);
+    memcpy(number, (l->input + start), sizeof(char) * len);
+    number[len] = '\0';
+    return number;
+}
+
+int isDigit(char ch) {
+    return '0' <= ch && ch <= '9';
 }

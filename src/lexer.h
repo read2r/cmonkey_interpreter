@@ -14,5 +14,9 @@ void readChar(Lexer* l);
 Token* nextToken(Lexer* l);
 Token* newToken(TokenType tokenType, char ch);
 void skipWhitespace(Lexer* l);
+char* readIdentifier(Lexer* l);
+int isLetter(char ch);
+char* readNumber(Lexer* l);
+int isDigit(char ch);
 
 #endif

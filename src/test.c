@@ -9,7 +9,6 @@ typedef struct _TestToken {
     TokenType expectedType;
     char* expectedLiteral;
 } TestToken;
-
 typedef struct _TestList {
     int len;
     TestToken* arr[100];
@@ -36,14 +35,14 @@ void TestNextToken1() {
     char* input = "=+(){},;";
 
     TestList* tests = (TestList*)malloc(sizeof(TestList));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_ASSIGN], "="));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_PLUS], "+"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_LPAREN], "("));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_RPAREN], ")"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_LBRACE], "{"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_RBRACE], "}"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_COMMA], ","));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_SEMICOLON], ";"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_ASSIGN], "="));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_PLUS], "+"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_LPAREN], "("));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_RPAREN], ")"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_LBRACE], "{"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_RBRACE], "}"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_COMMA], ","));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
 
     Lexer* l = newLexer(input);
 
@@ -51,6 +50,8 @@ void TestNextToken1() {
         Token* tok = nextToken(l);
         TestToken* tt = getTestAt(tests, i);
 
+        // comparing the memory addresses, not the contents of two.
+        // same TokenType, same address.
         if(!(tok->type == tt->expectedType)) {
             printf("tests[%d] tokentype wrong. expected=%s, got=%s.\n", i, tt->expectedType, tok->type);
             exit(1);
@@ -83,47 +84,47 @@ void TestNextToken2() {
 
     TestList* tests = (TestList*)malloc(sizeof(TestList));
     // let five = 5;
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_LET], "let"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_IDENT], "five"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_ASSIGN], "="));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_INT], "5"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_SEMICOLON], ";"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_LET], "let"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_IDENT], "five"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_ASSIGN], "="));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "5"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
     // let ten = 10;
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_LET], "let"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_IDENT], "ten"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_ASSIGN], "="));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_INT], "10"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_SEMICOLON], ";"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_LET], "let"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_IDENT], "ten"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_ASSIGN], "="));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "10"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
     // let add = fn(x, y) {
     //     x + y;
     // };
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_LET], "let"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_IDENT], "add"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_ASSIGN], "="));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_FUNCTION], "fn"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_LPAREN], "("));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_IDENT], "x"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_COMMA], ","));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_IDENT], "y"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_RPAREN], ")"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_LBRACE], "{"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_IDENT], "x"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_PLUS], "+"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_IDENT], "y"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_SEMICOLON], ";"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_RBRACE], "}"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_SEMICOLON], ";"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_LET], "let"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_IDENT], "add"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_ASSIGN], "="));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_FUNCTION], "fn"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_LPAREN], "("));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_IDENT], "x"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_COMMA], ","));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_IDENT], "y"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_RPAREN], ")"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_LBRACE], "{"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_IDENT], "x"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_PLUS], "+"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_IDENT], "y"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_RBRACE], "}"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
     // let result = add(five, ten);
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_LET], "let"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_IDENT], "result"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_ASSIGN], "="));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_IDENT], "add"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_LPAREN], "("));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_IDENT], "five"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_COMMA], ","));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_IDENT], "ten"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_RPAREN], ")"));
-    appendTest(tests, newTestToken(TOKENTYPES[TAG_SEMICOLON], ";"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_LET], "let"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_IDENT], "result"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_ASSIGN], "="));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_IDENT], "add"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_LPAREN], "("));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_IDENT], "five"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_COMMA], ","));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_IDENT], "ten"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_RPAREN], ")"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
 
     Lexer* l = newLexer(input);
 
@@ -152,8 +153,13 @@ void TestNextToken2() {
     printf("test ok\n");
 }
 
+void Init() {
+    InitializeTokenTypes();
+    InitializeKeywords();
+}
+
 int main() {
-    InitializeToken();
+    Init();
     TestNextToken1();
     TestNextToken2();
     return 0;
