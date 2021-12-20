@@ -204,6 +204,61 @@ void TestNextToken3() {
     printf("test ok\n");
 }
 
+void TestNextToken4() {
+    char* input = "if (5 < 10) {\
+                       return true;\
+                   } else {\
+                       return false;\
+                   }";
+
+    TestList* tests = (TestList*)malloc(sizeof(TestList));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_IF], "if"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_LPAREN], "("));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "5"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_LT], "<"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "10"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_RPAREN], ")"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_LBRACE], "{"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_RETURN], "return"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_TRUE], "true"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_RBRACE], "}"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_ELSE], "else"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_LBRACE], "{"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_RETURN], "return"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_FALSE], "false"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_RBRACE], "}"));
+
+    Lexer* l = newLexer(input);
+
+    for(int i = 0; i < tests->len; i++) {
+        Token* tok = nextToken(l);
+        TestToken* tt = getTestAt(tests, i);
+
+        // comparing the memory addresses, not the contents of two.
+        // same TokenType, same address.
+        if(!(tok->type == tt->expectedType)) {
+            printf("tests[%d] tokentype wrong. expected=%s, got=%s.\n", i, tt->expectedType, tok->type);
+            exit(1);
+        }
+
+        if(strcmp(tok->literal, tt->expectedLiteral)) {
+            printf("tests[%d] literal wrong. expected=%s, got=%s.\n", i, tt->expectedLiteral, tok->literal);
+            exit(1);
+        }
+
+        free(tok->literal);
+        free(tok);
+
+        free(tt->expectedLiteral);
+        free(tt);
+    }
+
+    free(tests);
+    printf("test ok\n");
+}
+
 void Init() {
     InitializeTokenTypes();
     InitializeKeywords();
