@@ -132,6 +132,57 @@ void TestNextToken2() {
         Token* tok = nextToken(l);
         TestToken* tt = getTestAt(tests, i);
 
+        // comparing the memory addresses, not the contents of two.
+        // same TokenType, same address.
+        if(!(tok->type == tt->expectedType)) {
+            printf("tests[%d] tokentype wrong. expected=%s, got=%s.\n", i, tt->expectedType, tok->type);
+            exit(1);
+        }
+
+        if(strcmp(tok->literal, tt->expectedLiteral)) {
+            printf("tests[%d] literal wrong. expected=%s, got=%s.\n", i, tt->expectedLiteral, tok->literal);
+            exit(1);
+        }
+
+        free(tok->literal);
+        free(tok);
+
+        free(tt->expectedLiteral);
+        free(tt);
+    }
+
+    free(tests);
+    printf("test ok\n");
+}
+
+void TestNextToken3() {
+    char* input = "!-/*5;\
+                   5 < 10 > 5;";
+
+    TestList* tests = (TestList*)malloc(sizeof(TestList));
+    // !-/*5;
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_BANG], "!"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_MINUS], "-"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_SLASH], "/"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_ASTERISK], "*"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "5"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    // 5 < 10 > 5;
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "5"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_LT], "<"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "10"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_GT], ">"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "5"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+
+    Lexer* l = newLexer(input);
+
+    for(int i = 0; i < tests->len; i++) {
+        Token* tok = nextToken(l);
+        TestToken* tt = getTestAt(tests, i);
+
+        // comparing the memory addresses, not the contents of two.
+        // same TokenType, same address.
         if(!(tok->type == tt->expectedType)) {
             printf("tests[%d] tokentype wrong. expected=%s, got=%s.\n", i, tt->expectedType, tok->type);
             exit(1);
@@ -162,5 +213,6 @@ int main() {
     Init();
     TestNextToken1();
     TestNextToken2();
+    TestNextToken3();
     return 0;
 }

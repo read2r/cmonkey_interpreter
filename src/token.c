@@ -15,6 +15,12 @@ void InitializeTokenTypes() {
     appendTokenType(CODE_INT, "INT");
     appendTokenType(CODE_ASSIGN, "=");
     appendTokenType(CODE_PLUS, "+");
+    appendTokenType(CODE_MINUS, "-");
+    appendTokenType(CODE_BANG, "!");
+    appendTokenType(CODE_ASTERISK, "*");
+    appendTokenType(CODE_SLASH, "/");
+    appendTokenType(CODE_LT, "<");
+    appendTokenType(CODE_GT, ">");
     appendTokenType(CODE_COMMA, ",");
     appendTokenType(CODE_SEMICOLON, ";");
     appendTokenType(CODE_LPAREN, "(");

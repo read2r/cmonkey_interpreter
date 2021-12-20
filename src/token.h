@@ -32,6 +32,13 @@ enum {
 
     CODE_ASSIGN,
     CODE_PLUS,
+    CODE_MINUS,
+    CODE_BANG,
+    CODE_ASTERISK,
+    CODE_SLASH,
+
+    CODE_LT,
+    CODE_GT,
 
     CODE_COMMA,
     CODE_SEMICOLON,
