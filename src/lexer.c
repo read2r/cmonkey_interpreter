@@ -30,25 +30,43 @@ Token* nextToken(Lexer* l) {
     case '=':
         tok = newToken(TOKENTYPES[CODE_ASSIGN], l->ch);
         break;
-    case';':
-        tok = newToken(TOKENTYPES[CODE_SEMICOLON], l->ch);
-        break;
-    case'(':
-        tok = newToken(TOKENTYPES[CODE_LPAREN], l->ch);
-        break;
-    case')':
-        tok = newToken(TOKENTYPES[CODE_RPAREN], l->ch);
-        break;
-    case',':
-        tok = newToken(TOKENTYPES[CODE_COMMA], l->ch);
-        break;
-    case'+':
+    case '+':
         tok = newToken(TOKENTYPES[CODE_PLUS], l->ch);
         break;
-    case'{':
+    case '-':
+        tok = newToken(TOKENTYPES[CODE_MINUS], l->ch);
+        break;
+    case '!':
+        tok = newToken(TOKENTYPES[CODE_BANG], l->ch);
+        break;
+    case '/':
+        tok = newToken(TOKENTYPES[CODE_SLASH], l->ch);
+        break;
+    case '*':
+        tok = newToken(TOKENTYPES[CODE_ASTERISK], l->ch);
+        break;
+    case '<':
+        tok = newToken(TOKENTYPES[CODE_LT], l->ch);
+        break;
+    case '>':
+        tok = newToken(TOKENTYPES[CODE_GT], l->ch);
+        break;
+    case ';':
+        tok = newToken(TOKENTYPES[CODE_SEMICOLON], l->ch);
+        break;
+    case '(':
+        tok = newToken(TOKENTYPES[CODE_LPAREN], l->ch);
+        break;
+    case ')':
+        tok = newToken(TOKENTYPES[CODE_RPAREN], l->ch);
+        break;
+    case ',':
+        tok = newToken(TOKENTYPES[CODE_COMMA], l->ch);
+        break;
+    case '{':
         tok = newToken(TOKENTYPES[CODE_LBRACE], l->ch);
         break;
-    case'}':
+    case '}':
         tok = newToken(TOKENTYPES[CODE_RBRACE], l->ch);
         break;
     case 0:
