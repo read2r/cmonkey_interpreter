@@ -260,6 +260,49 @@ void TestNextToken4() {
     printf("test ok\n");
 }
 
+void TestNextToken5() {
+    char* input = "10 == 10;\
+                   10 != 9;";
+
+    TestList* tests = (TestList*)malloc(sizeof(TestList));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "10"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_EQ], "=="));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "10"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "10"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_NOT_EQ], "!="));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "9"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+
+    Lexer* l = newLexer(input);
+
+    for(int i = 0; i < tests->len; i++) {
+        Token* tok = nextToken(l);
+        TestToken* tt = getTestAt(tests, i);
+
+        // comparing the memory addresses, not the contents of two.
+        // same TokenType, same address.
+        if(!(tok->type == tt->expectedType)) {
+            printf("tests[%d] tokentype wrong. expected=%s, got=%s.\n", i, tt->expectedType, tok->type);
+            exit(1);
+        }
+
+        if(strcmp(tok->literal, tt->expectedLiteral)) {
+            printf("tests[%d] literal wrong. expected=%s, got=%s.\n", i, tt->expectedLiteral, tok->literal);
+            exit(1);
+        }
+
+        free(tok->literal);
+        free(tok);
+
+        free(tt->expectedLiteral);
+        free(tt);
+    }
+
+    free(tests);
+    printf("test ok\n");
+}
+
 void Init() {
     InitializeTokenTypes();
     InitializeKeywords();
@@ -271,5 +314,6 @@ int main() {
     TestNextToken2();
     TestNextToken3();
     TestNextToken4();
+    TestNextToken5();
     return 0;
 }
