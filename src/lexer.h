@@ -11,6 +11,7 @@ typedef struct _Lexer {
 
 Lexer* newLexer(const char* input);
 void readChar(Lexer* l);
+char peekChar(Lexer* l);
 Token* nextToken(Lexer* l);
 Token* newToken(TokenType tokenType, char ch);
 void skipWhitespace(Lexer* l);

@@ -21,6 +21,14 @@ void readChar(Lexer* l) {
     l->readPosition++;
 }
 
+char peekChar(Lexer* l) {
+    if(l->readPosition >= strlen(l->input)) {
+        return 0;
+    } else {
+        return l->input[l->readPosition];
+    }
+}
+
 Token* nextToken(Lexer* l) {
     Token* tok = NULL;
 
@@ -28,7 +36,15 @@ Token* nextToken(Lexer* l) {
 
     switch(l->ch) {
     case '=':
-        tok = newToken(TOKENTYPES[CODE_ASSIGN], l->ch);
+        if(peekChar(l) == '=') {
+            tok = (Token*)malloc(sizeof(Token));
+            readChar(l);
+            tok->type = TOKENTYPES[CODE_EQ];
+            tok->literal = (char*)malloc(sizeof(char) * 3);
+            strcpy(tok->literal, "==");
+        } else {
+            tok = newToken(TOKENTYPES[CODE_ASSIGN], l->ch);
+        }
         break;
     case '+':
         tok = newToken(TOKENTYPES[CODE_PLUS], l->ch);
@@ -37,7 +53,15 @@ Token* nextToken(Lexer* l) {
         tok = newToken(TOKENTYPES[CODE_MINUS], l->ch);
         break;
     case '!':
-        tok = newToken(TOKENTYPES[CODE_BANG], l->ch);
+        if(peekChar(l) == '=') {
+            tok = (Token*)malloc(sizeof(Token));
+            readChar(l);
+            tok->type = TOKENTYPES[CODE_NOT_EQ];
+            tok->literal = (char*)malloc(sizeof(char) * 3);
+            strcpy(tok->literal, "!=");
+        } else {
+            tok = newToken(TOKENTYPES[CODE_BANG], l->ch);
+        }
         break;
     case '/':
         tok = newToken(TOKENTYPES[CODE_SLASH], l->ch);

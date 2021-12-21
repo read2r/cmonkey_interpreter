@@ -40,6 +40,9 @@ enum {
     CODE_LT,
     CODE_GT,
 
+    CODE_EQ,
+    CODE_NOT_EQ,
+
     CODE_COMMA,
     CODE_SEMICOLON,
 

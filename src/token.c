@@ -21,6 +21,8 @@ void InitializeTokenTypes() {
     appendTokenType(CODE_SLASH, "/");
     appendTokenType(CODE_LT, "<");
     appendTokenType(CODE_GT, ">");
+    appendTokenType(CODE_EQ, "==");
+    appendTokenType(CODE_NOT_EQ, "!=");
     appendTokenType(CODE_COMMA, ",");
     appendTokenType(CODE_SEMICOLON, ";");
     appendTokenType(CODE_LPAREN, "(");
