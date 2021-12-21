@@ -9,6 +9,7 @@ typedef struct _TestToken {
     TokenType expectedType;
     char* expectedLiteral;
 } TestToken;
+
 typedef struct _TestList {
     int len;
     TestToken* arr[100];
@@ -269,5 +270,6 @@ int main() {
     TestNextToken1();
     TestNextToken2();
     TestNextToken3();
+    TestNextToken4();
     return 0;
 }

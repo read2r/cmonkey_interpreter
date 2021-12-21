@@ -29,6 +29,11 @@ void InitializeTokenTypes() {
     appendTokenType(CODE_RBRACE, "}");
     appendTokenType(CODE_FUNCTION, "FUNCTION");
     appendTokenType(CODE_LET, "LET");
+    appendTokenType(CODE_TRUE, "ture");
+    appendTokenType(CODE_FALSE, "false");
+    appendTokenType(CODE_IF, "if");
+    appendTokenType(CODE_ELSE, "else");
+    appendTokenType(CODE_RETURN, "return");
 }
 
 Keyword* newKeyword(TokenTypeCode typeCode, const char* literal) {
@@ -48,6 +53,11 @@ void InitializeKeywords() {
     KEYWORDS = (Keywords*)malloc(sizeof(Keywords));
     appendKeyword(CODE_FUNCTION, "fn");
     appendKeyword(CODE_LET, "let");
+    appendKeyword(CODE_TRUE, "true");
+    appendKeyword(CODE_FALSE, "false");
+    appendKeyword(CODE_IF, "if");
+    appendKeyword(CODE_ELSE, "else");
+    appendKeyword(CODE_RETURN, "return");
 }
 
 TokenType LookupIdent(char* ident) {

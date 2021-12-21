@@ -50,6 +50,11 @@ enum {
 
     CODE_FUNCTION,
     CODE_LET,
+    CODE_TRUE,
+    CODE_FALSE,
+    CODE_IF,
+    CODE_ELSE,
+    CODE_RETURN,
 };
 
 TokenType TOKENTYPES[TOKENTYPES_LEN];
