@@ -44,6 +44,7 @@ void TestNextToken1() {
     appendTest(tests, newTestToken(TOKENTYPES[CODE_RBRACE], "}"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_COMMA], ","));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_EOF], " "));
 
     Lexer* l = newLexer(input);
 
@@ -126,6 +127,7 @@ void TestNextToken2() {
     appendTest(tests, newTestToken(TOKENTYPES[CODE_IDENT], "ten"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_RPAREN], ")"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_EOF], " "));
 
     Lexer* l = newLexer(input);
 
@@ -175,6 +177,7 @@ void TestNextToken3() {
     appendTest(tests, newTestToken(TOKENTYPES[CODE_GT], ">"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "5"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_EOF], " "));
 
     Lexer* l = newLexer(input);
 
@@ -230,6 +233,7 @@ void TestNextToken4() {
     appendTest(tests, newTestToken(TOKENTYPES[CODE_FALSE], "false"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_RBRACE], "}"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_EOF], " "));
 
     Lexer* l = newLexer(input);
 
@@ -273,6 +277,7 @@ void TestNextToken5() {
     appendTest(tests, newTestToken(TOKENTYPES[CODE_NOT_EQ], "!="));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "9"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, newTestToken(TOKENTYPES[CODE_EOF], " "));
 
     Lexer* l = newLexer(input);
 

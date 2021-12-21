@@ -7,6 +7,8 @@ Lexer* newLexer(const char* input) {
     Lexer* nl = (Lexer*)malloc(sizeof(Lexer));
     nl->input = (char*)malloc(sizeof(char) * (strlen(input) + 1));
     memcpy(nl->input, input, sizeof(char) * (strlen(input) + 1));
+    nl->position = 0;
+    nl->readPosition = 0;
     readChar(nl);
     return nl;
 }

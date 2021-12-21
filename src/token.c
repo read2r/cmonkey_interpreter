@@ -53,6 +53,7 @@ void appendKeyword(TokenTypeCode typeCode, const char* literal) {
 
 void InitializeKeywords() {
     KEYWORDS = (Keywords*)malloc(sizeof(Keywords));
+    KEYWORDS->len = 0;
     appendKeyword(CODE_FUNCTION, "fn");
     appendKeyword(CODE_LET, "let");
     appendKeyword(CODE_TRUE, "true");
