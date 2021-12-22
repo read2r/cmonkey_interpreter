@@ -17,6 +17,9 @@ void scanInput(char* input, int inputLen) {
 }
 
 void start() {
+    InitializeTokenTypes();
+    InitializeKeywords();
+
     const char* prompt = ">> ";
     char input[INPUT_LEN];
 
