@@ -32,10 +32,32 @@ TestToken* getTestAt(TestList* tl, int idx) {
     return tl->arr[idx];
 }
 
-void TestNextToken1() {
-    char* input = "=+(){},;";
+void TestNextToken() {
+    char* input = "=+(){},;\
+                   \
+                   let five = 5;\
+                   let ten = 10;\
+                   \
+                   let add = fn(x, y) {\
+                       x + y;\
+                   };\
+                   \
+                   let result = add(five, ten);\
+                   !-/*5;\
+                   5 < 10 > 5;\
+                   \
+                   if (5 < 10) {\
+                       return true;\
+                   } else {\
+                       return false;\
+                   }\
+                   \
+                   10 == 10;\
+                   10 != 9;";
+                    
 
     TestList* tests = (TestList*)malloc(sizeof(TestList));
+    // =+(){},;
     appendTest(tests, newTestToken(TOKENTYPES[CODE_ASSIGN], "="));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_PLUS], "+"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_LPAREN], "("));
@@ -44,47 +66,6 @@ void TestNextToken1() {
     appendTest(tests, newTestToken(TOKENTYPES[CODE_RBRACE], "}"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_COMMA], ","));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
-    appendTest(tests, newTestToken(TOKENTYPES[CODE_EOF], " "));
-
-    Lexer* l = newLexer(input);
-
-    for(int i = 0; i < tests->len; i++) {
-        Token* tok = nextToken(l);
-        TestToken* tt = getTestAt(tests, i);
-
-        // comparing the memory addresses, not the contents of two.
-        // same TokenType, same address.
-        if(!(tok->type == tt->expectedType)) {
-            printf("tests[%d] tokentype wrong. expected=%s, got=%s.\n", i, tt->expectedType, tok->type);
-            exit(1);
-        }
-
-        if(strcmp(tok->literal, tt->expectedLiteral)) {
-            printf("tests[%d] literal wrong. expected=%s, got = %s.\n", i, tt->expectedLiteral, tok->literal);
-            exit(1);
-        }
-
-        free(tok->literal);
-        free(tok);
-
-        free(tt->expectedLiteral);
-        free(tt);
-    } 
-
-    free(tests);
-    printf("test ok\n");
-}
-
-void TestNextToken2() {
-    char* input = "let five = 5;\
-                   let ten = 10;\
-                   \
-                   let add = fn(x, y) {\
-                       x + y;\
-                   };\
-                   let result = add(five, ten);";
-
-    TestList* tests = (TestList*)malloc(sizeof(TestList));
     // let five = 5;
     appendTest(tests, newTestToken(TOKENTYPES[CODE_LET], "let"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_IDENT], "five"));
@@ -127,42 +108,6 @@ void TestNextToken2() {
     appendTest(tests, newTestToken(TOKENTYPES[CODE_IDENT], "ten"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_RPAREN], ")"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
-    appendTest(tests, newTestToken(TOKENTYPES[CODE_EOF], " "));
-
-    Lexer* l = newLexer(input);
-
-    for(int i = 0; i < tests->len; i++) {
-        Token* tok = nextToken(l);
-        TestToken* tt = getTestAt(tests, i);
-
-        // comparing the memory addresses, not the contents of two.
-        // same TokenType, same address.
-        if(!(tok->type == tt->expectedType)) {
-            printf("tests[%d] tokentype wrong. expected=%s, got=%s.\n", i, tt->expectedType, tok->type);
-            exit(1);
-        }
-
-        if(strcmp(tok->literal, tt->expectedLiteral)) {
-            printf("tests[%d] literal wrong. expected=%s, got=%s.\n", i, tt->expectedLiteral, tok->literal);
-            exit(1);
-        }
-
-        free(tok->literal);
-        free(tok);
-
-        free(tt->expectedLiteral);
-        free(tt);
-    }
-
-    free(tests);
-    printf("test ok\n");
-}
-
-void TestNextToken3() {
-    char* input = "!-/*5;\
-                   5 < 10 > 5;";
-
-    TestList* tests = (TestList*)malloc(sizeof(TestList));
     // !-/*5;
     appendTest(tests, newTestToken(TOKENTYPES[CODE_BANG], "!"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_MINUS], "-"));
@@ -177,45 +122,11 @@ void TestNextToken3() {
     appendTest(tests, newTestToken(TOKENTYPES[CODE_GT], ">"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "5"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
-    appendTest(tests, newTestToken(TOKENTYPES[CODE_EOF], " "));
-
-    Lexer* l = newLexer(input);
-
-    for(int i = 0; i < tests->len; i++) {
-        Token* tok = nextToken(l);
-        TestToken* tt = getTestAt(tests, i);
-
-        // comparing the memory addresses, not the contents of two.
-        // same TokenType, same address.
-        if(!(tok->type == tt->expectedType)) {
-            printf("tests[%d] tokentype wrong. expected=%s, got=%s.\n", i, tt->expectedType, tok->type);
-            exit(1);
-        }
-
-        if(strcmp(tok->literal, tt->expectedLiteral)) {
-            printf("tests[%d] literal wrong. expected=%s, got=%s.\n", i, tt->expectedLiteral, tok->literal);
-            exit(1);
-        }
-
-        free(tok->literal);
-        free(tok);
-
-        free(tt->expectedLiteral);
-        free(tt);
-    }
-
-    free(tests);
-    printf("test ok\n");
-}
-
-void TestNextToken4() {
-    char* input = "if (5 < 10) {\
-                       return true;\
-                   } else {\
-                       return false;\
-                   }";
-
-    TestList* tests = (TestList*)malloc(sizeof(TestList));
+    // if (5 < 10) {
+    //     return true;
+    // } else {
+    //     return false;
+    // }
     appendTest(tests, newTestToken(TOKENTYPES[CODE_IF], "if"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_LPAREN], "("));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "5"));
@@ -233,42 +144,8 @@ void TestNextToken4() {
     appendTest(tests, newTestToken(TOKENTYPES[CODE_FALSE], "false"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_RBRACE], "}"));
-    appendTest(tests, newTestToken(TOKENTYPES[CODE_EOF], " "));
-
-    Lexer* l = newLexer(input);
-
-    for(int i = 0; i < tests->len; i++) {
-        Token* tok = nextToken(l);
-        TestToken* tt = getTestAt(tests, i);
-
-        // comparing the memory addresses, not the contents of two.
-        // same TokenType, same address.
-        if(!(tok->type == tt->expectedType)) {
-            printf("tests[%d] tokentype wrong. expected=%s, got=%s.\n", i, tt->expectedType, tok->type);
-            exit(1);
-        }
-
-        if(strcmp(tok->literal, tt->expectedLiteral)) {
-            printf("tests[%d] literal wrong. expected=%s, got=%s.\n", i, tt->expectedLiteral, tok->literal);
-            exit(1);
-        }
-
-        free(tok->literal);
-        free(tok);
-
-        free(tt->expectedLiteral);
-        free(tt);
-    }
-
-    free(tests);
-    printf("test ok\n");
-}
-
-void TestNextToken5() {
-    char* input = "10 == 10;\
-                   10 != 9;";
-
-    TestList* tests = (TestList*)malloc(sizeof(TestList));
+    // 10 == 10;
+    // 10 != 9;
     appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "10"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_EQ], "=="));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "10"));
@@ -277,7 +154,6 @@ void TestNextToken5() {
     appendTest(tests, newTestToken(TOKENTYPES[CODE_NOT_EQ], "!="));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_INT], "9"));
     appendTest(tests, newTestToken(TOKENTYPES[CODE_SEMICOLON], ";"));
-    appendTest(tests, newTestToken(TOKENTYPES[CODE_EOF], " "));
 
     Lexer* l = newLexer(input);
 
@@ -293,7 +169,7 @@ void TestNextToken5() {
         }
 
         if(strcmp(tok->literal, tt->expectedLiteral)) {
-            printf("tests[%d] literal wrong. expected=%s, got=%s.\n", i, tt->expectedLiteral, tok->literal);
+            printf("tests[%d] literal wrong. expected=%s, got = %s.\n", i, tt->expectedLiteral, tok->literal);
             exit(1);
         }
 
@@ -302,7 +178,7 @@ void TestNextToken5() {
 
         free(tt->expectedLiteral);
         free(tt);
-    }
+    } 
 
     free(tests);
     printf("test ok\n");
@@ -315,10 +191,6 @@ void Init() {
 
 int main() {
     Init();
-    TestNextToken1();
-    TestNextToken2();
-    TestNextToken3();
-    TestNextToken4();
-    TestNextToken5();
+    TestNextToken();
     return 0;
 }
