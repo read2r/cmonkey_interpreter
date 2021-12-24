@@ -49,6 +49,6 @@ foo:
 
 .PHONY : clean main test
 clean:
-	rm -f $(TARGET_OBJ) $(TARGET_DEP) $(TARGET_OUT) $(TEST_OBJ) $(TEST_DEP) $(TEST_OUT) $(OBJECTS) $(DEPS)
+	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.d $(BIN_DIR)/*.out
 
 -include $(DEPS)
