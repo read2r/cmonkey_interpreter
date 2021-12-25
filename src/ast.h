@@ -37,19 +37,23 @@ typedef struct _Program {
 // Expression
 typedef struct _Identifier {
     NodeType nodeType;
-    Token* token; // LET Token;
+    Token* token; // IDENT Token;
     char* value;
 } Identifier;
 
 // Statement;
 typedef struct _LetStatement {
     NodeType nodeType;
-    Token* token; // IDENT Token;
+    Token* token; // LET Token;
     Identifier* name;
     Expression* value;
 } LetStatement;
 
+Program* newProgram();
+Identifier* newIdentifier();
+LetStatement* newLetStatement();
 
 char* TokenLiteral(Node* node);
+void appendStatement(Program* program, Statement* stmt);
 
 #endif
