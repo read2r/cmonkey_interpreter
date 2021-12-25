@@ -3,7 +3,7 @@
 # C compiler
 CC = gcc
 # GCC option
-CFLAGS = -Wall -O2
+CFLAGS = -Wall -O2 -g
 # Linker option
 LDFLAGS = 
 # Library
