@@ -95,17 +95,11 @@ void checkParserErrors(Parser* p) {
         return;
     }
 
-    Error error = newError(NULL);
-    int errlen = sprintf(error, "parser has %d errors", errors->len);
-    error[errlen] = '\0';
-
+    printfError("parse has %d errors", errors->len);
     for(int i = 0; i < errors->len; i++) {
-        errlen = sprintf(error, "parser error: %s", errors->arr[i]);
-        error[errlen] = '\0';
-        printError(error);
+        printfError("parser error: %s", errors->arr[i]);
     }
 
-    freeError(error);
     freeErrors(errors);
 
     exit(1);
@@ -243,12 +237,12 @@ void TestNextToken() {
         // comparing the memory addresses, not the contents of two.
         // same TokenType, same address.
         if(!(tok->type == et->expectedType)) {
-            printf("tests[%d] tokentype wrong. expected=%s, got=%s.\n", i, et->expectedType, tok->type);
+            printfError("tests[%d] tokentype wrong. expected=%s, got=%s.\n", i, et->expectedType, tok->type);
             exit(1);
         }
 
         if(strcmp(tok->literal, et->expectedLiteral)) {
-            printf("tests[%d] literal wrong. expected=%s, got = %s.\n", i, et->expectedLiteral, tok->literal);
+            printfError("tests[%d] literal wrong. expected=%s, got = %s.\n", i, et->expectedLiteral, tok->literal);
             exit(1);
         }
 
@@ -264,23 +258,23 @@ void TestNextToken() {
 
 int TestLetStatement(Statement* s, const char* name) {
     if(strcmp(TokenLiteral((Node*)s), "let")) {
-        printf("1s.TokenLiteral not 'let'. got=%s\n", TokenLiteral((Node*)s));
+        printfError("1s.TokenLiteral not 'let'. got=%s\n", TokenLiteral((Node*)s));
         return 0;
     }
 
     LetStatement* letStmt = (LetStatement*)s;
     if(letStmt->nodeType != CODE_LETSTATEMENT) {
-        printf("s not LetStatement. got=%d\n", s->nodeType);
+        printfError("s not LetStatement. got=%d\n", s->nodeType);
         return 0;
     }
 
     if(strcmp(letStmt->name->value, name)) {
-        printf("letStmt->name->value not '%s'. got=%s\n", name, letStmt->name->value);
+        printfError("letStmt->name->value not '%s'. got=%s\n", name, letStmt->name->value);
         return 0;
     }
 
     if(strcmp(TokenLiteral((Node*)(letStmt->name)), name)) {
-        printf("TokenLiteral(letStmt->name) not '%s'. got=%s\n", name, TokenLiteral((Node*)(letStmt->name)));
+        printfError("TokenLiteral(letStmt->name) not '%s'. got=%s\n", name, TokenLiteral((Node*)(letStmt->name)));
         return 0;
     }
 
@@ -289,8 +283,8 @@ int TestLetStatement(Statement* s, const char* name) {
 
 void TestLetStatements() {
     char* input = "let x = 5;\
-                   let y = 10;\
-                   let foobar = 838383;";
+                   let = 10;\
+                   let 838383;";
 
     Lexer* l = newLexer(input);
     Parser* p = newParser(l);
@@ -299,12 +293,12 @@ void TestLetStatements() {
     checkParserErrors(p);
 
     if(program == NULL) {
-        printf("ParseProgram() return NULL\n");
+        printfError("ParseProgram() return NULL\n");
         exit(1);
     }
 
     if(program->len != 3) {
-        printf("program.statements does not contin 3 statements. got=%d\n", program->len);
+        printfError("program.statements does not contin 3 statements. got=%d\n", program->len);
         exit(1);
     }
 

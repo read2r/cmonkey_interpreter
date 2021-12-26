@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "merr.h"
 #include "token.h"
@@ -65,6 +66,14 @@ void peekError(Errors* errors, Token* peekToken, TokenType tokenType) {
     appendError(errors, error);
 }
 
-void printError(Error error) {
-    printf(ANSI_CORLOR_RED "[ERROR] " ANSI_CORLOR_RESET "%s\n", error);
+void printfError(const char* errfmt, ...) {
+    char buf[512] = {0,};
+    va_list ap;
+
+    strcpy(buf, ANSI_CORLOR_RED "[ERROR] " ANSI_CORLOR_RESET);
+    va_start(ap, errfmt);
+    vsprintf(buf + strlen(buf), errfmt, ap);
+    va_end(ap);
+
+    puts(buf);
 }
