@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "merr.h"
 #include "parser.h"
 #include "ast.h"
 #include "token.h"
@@ -8,6 +9,7 @@ Parser* newParser(Lexer* l) {
     p->l = l;
     p->curToken = NULL;
     p->peekToken= NULL;
+    p->errors = newErrors();
 
     parseNextToken(p);
     parseNextToken(p);
@@ -32,8 +34,10 @@ int expectPeek(Parser* p, TokenType tokenType) {
     if(peekTokenIs(p, tokenType)) {
         parseNextToken(p);
         return 1;
+    } else {
+        peekError(p->errors, p->peekToken, tokenType);
+        return 0;
     }
-    return 0;
 }
 
 LetStatement* parseLetStatement(Parser* p) {

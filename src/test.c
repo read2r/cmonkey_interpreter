@@ -7,6 +7,7 @@
 #include "lexer.h"
 #include "ast.h"
 #include "parser.h"
+#include "merr.h"
 
 typedef int TestType;
 
@@ -86,6 +87,28 @@ void freeTest(Test* t) {
     } else if(t->testType == TT_IDENTIFIER) {
         freeExpectedIdentifier((ExpectedIdentifier*)t);
     }
+}
+
+void checkParserErrors(Parser* p) {
+    Errors* errors = p->errors;
+    if(errors->len == 0) {
+        return;
+    }
+
+    Error error = newError(NULL);
+    int errlen = sprintf(error, "parser has %d errors", errors->len);
+    error[errlen] = '\0';
+
+    for(int i = 0; i < errors->len; i++) {
+        errlen = sprintf(error, "parser error: %s", errors->arr[i]);
+        error[errlen] = '\0';
+        printError(error);
+    }
+
+    freeError(error);
+    freeErrors(errors);
+
+    exit(1);
 }
 
 void TestNextToken() {
@@ -273,12 +296,16 @@ void TestLetStatements() {
     Parser* p = newParser(l);
 
     Program* program = parseProgram(p);
+    checkParserErrors(p);
+
     if(program == NULL) {
-        printf("ParseProgram() return NULL");
+        printf("ParseProgram() return NULL\n");
+        exit(1);
     }
 
     if(program->len != 3) {
-        printf("program.statements does not contin 3 statements. got=%d", program->len);
+        printf("program.statements does not contin 3 statements. got=%d\n", program->len);
+        exit(1);
     }
 
     TestList* tests = newTestList();
