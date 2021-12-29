@@ -60,11 +60,27 @@ LetStatement* parseLetStatement(Parser* p) {
     return lstmt;
 }
 
+ReturnStatement* parseReturnStatement(Parser* p) {
+    ReturnStatement* rstmt = newReturnStatement();
+    rstmt->nodeType = CODE_RETURN_STATEMENT;
+    rstmt->token = p->curToken;
+
+    parseNextToken(p);
+
+    while(!curTokenIs(p, TOKENTYPES[CODE_SEMICOLON])) {
+        parseNextToken(p);
+    }
+
+    return rstmt;
+}
+
 Statement* parseStatement(Parser* p) {
     Statement* stmt = NULL;
 
     if(p->curToken->type == TOKENTYPES[CODE_LET]) {
         stmt = (Statement*)parseLetStatement(p);
+    } else if(p->curToken->type == TOKENTYPES[CODE_RETURN]) {
+        stmt = (Statement*)parseReturnStatement(p);
     }
 
     return stmt;

@@ -12,8 +12,9 @@ enum {
     CODE_STATEMENT,
     CODE_EXPRESSION,
     CODE_PROGRAM,
-    CODE_LETSTATEMENT,
+    CODE_LET_STATEMENT,
     CODE_IDENTIFIER,
+    CODE_RETURN_STATEMENT,
 };
 
 typedef struct _Node {
@@ -41,7 +42,7 @@ typedef struct _Identifier {
     char* value;
 } Identifier;
 
-// Statement;
+// Statement
 typedef struct _LetStatement {
     NodeType nodeType;
     Token* token; // LET Token;
@@ -49,10 +50,41 @@ typedef struct _LetStatement {
     Expression* value;
 } LetStatement;
 
+// Statement
+typedef struct _ReturnStatement {
+    NodeType nodeType;
+    Token* token;
+    Expression* returnValue;
+} ReturnStatement;
+
+// Statement
+typedef struct _ExpressionStatement {
+    Token* token;
+    Expression* expression;
+} ExpressionStatement;
+
+
+typedef struct _Buffer {
+    int len;
+    char* arr[512];
+} Buffer;
+
+typedef char* (*fptrTokenLiteral)(Node* node);
+typedef char* (*fptrToString)(Node* node);
+
 Program* newProgram();
 Identifier* newIdentifier();
 LetStatement* newLetStatement();
+ReturnStatement* newReturnStatement();
 
+fptrTokenLiteral TokenLiteralList[100];
+fptrToString ToStringList[100];
+char* NodeTypeString[100];
+
+void InitToStringList();
+char* ToString(Node* node);
+
+void InitTokenLiteralList();
 char* TokenLiteral(Node* node);
 void appendStatement(Program* program, Statement* stmt);
 

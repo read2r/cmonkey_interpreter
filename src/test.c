@@ -237,12 +237,14 @@ void TestNextToken() {
         // comparing the memory addresses, not the contents of two.
         // same TokenType, same address.
         if(!(tok->type == et->expectedType)) {
-            printfError("tests[%d] tokentype wrong. expected=%s, got=%s.\n", i, et->expectedType, tok->type);
+            printfError("tests[%d] tokentype wrong. expected=%s, got=%s.\n", 
+                    i, et->expectedType, tok->type);
             exit(1);
         }
 
         if(strcmp(tok->literal, et->expectedLiteral)) {
-            printfError("tests[%d] literal wrong. expected=%s, got = %s.\n", i, et->expectedLiteral, tok->literal);
+            printfError("tests[%d] literal wrong. expected=%s, got = %s.\n", 
+                    i, et->expectedLiteral, tok->literal);
             exit(1);
         }
 
@@ -258,23 +260,26 @@ void TestNextToken() {
 
 int TestLetStatement(Statement* s, const char* name) {
     if(strcmp(TokenLiteral((Node*)s), "let")) {
-        printfError("1s.TokenLiteral not 'let'. got=%s\n", TokenLiteral((Node*)s));
+        printfError("1s.TokenLiteral not 'let'. got=%s\n", 
+                TokenLiteral((Node*)s));
         return 0;
     }
 
     LetStatement* letStmt = (LetStatement*)s;
-    if(letStmt->nodeType != CODE_LETSTATEMENT) {
+    if(letStmt->nodeType != CODE_LET_STATEMENT) {
         printfError("s not LetStatement. got=%d\n", s->nodeType);
         return 0;
     }
 
     if(strcmp(letStmt->name->value, name)) {
-        printfError("letStmt->name->value not '%s'. got=%s\n", name, letStmt->name->value);
+        printfError("letStmt->name->value not '%s'. got=%s\n", 
+                name, letStmt->name->value);
         return 0;
     }
 
     if(strcmp(TokenLiteral((Node*)(letStmt->name)), name)) {
-        printfError("TokenLiteral(letStmt->name) not '%s'. got=%s\n", name, TokenLiteral((Node*)(letStmt->name)));
+        printfError("TokenLiteral(letStmt->name) not '%s'. got=%s\n", 
+                name, TokenLiteral((Node*)(letStmt->name)));
         return 0;
     }
 
@@ -283,8 +288,8 @@ int TestLetStatement(Statement* s, const char* name) {
 
 void TestLetStatements() {
     char* input = "let x = 5;\
-                   let = 10;\
-                   let 838383;";
+                   let y = 10;\
+                   let foobar = 838383;";
 
     Lexer* l = newLexer(input);
     Parser* p = newParser(l);
@@ -298,7 +303,8 @@ void TestLetStatements() {
     }
 
     if(program->len != 3) {
-        printfError("program.statements does not contin 3 statements. got=%d\n", program->len);
+        printfError("program.statements does not contain 3 statements. got=%d\n", 
+                program->len);
         exit(1);
     }
 
@@ -319,14 +325,72 @@ void TestLetStatements() {
     printf("test ok\n");
 }
 
+void TestReturnStatements() {
+    char* input = "return 5;\
+                   return 10;\
+                   return 993322;";
+
+    Lexer* l = newLexer(input);
+    Parser* p = newParser(l);
+
+    Program* program = parseProgram(p);
+    checkParserErrors(p);
+
+    if(program->len != 3) {
+        printfError("program.statements does not contain 3 statements. got=%d", 
+                program->len);
+        exit(1);
+    }
+    
+    for(int i = 0; i < program->len; i++) {
+        ReturnStatement* returnStmt = (ReturnStatement*)program->statements[i];
+        NodeType nt = returnStmt->nodeType;
+        if(nt != CODE_RETURN_STATEMENT) {
+            printfError("stmt not ReturnStatement. got=%s\n", 
+                    NodeTypeString[returnStmt->nodeType]);
+            continue;
+        }
+
+        if(strcmp(TokenLiteral((Node*)returnStmt), "return")) {
+            printfError("returnStmt.TokenLiteral not 'return', got=%s\n",
+                    TokenLiteral((Node*)returnStmt));
+            exit(1);
+        }
+    }
+
+    printf("test ok\n");
+}
+
+void TestString() {
+    char* input = "let myVar = 123;";
+
+    Lexer* l = newLexer(input);
+    Parser* p = newParser(l);
+
+    Program* program = parseProgram(p);
+    checkParserErrors(p);
+    
+    printf("%s\n", ToString((Node*)program));
+    printf("%s\n", input);
+    if(strcmp(ToString((Node*)program), input)) {
+        printfError("program.String() wrong. get=%s", ToString((Node*)program));
+        exit(1);
+    }
+
+    printf("test ok\n");
+}
+
 void Init() {
     InitializeTokenTypes();
     InitializeKeywords();
+    InitTokenLiteralList();
 }
 
 int main() {
     Init();
     TestNextToken();
     TestLetStatements();
+    TestReturnStatements();
+    TestString();
     return 0;
 }

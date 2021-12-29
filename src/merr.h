@@ -19,6 +19,6 @@ void freeErrors(Errors* errors);
 Error getErrorAt(Errors* errors, unsigned int idx);
 void appendError(Errors* errors, Error error);
 void peekError(Errors* errors, Token* peekToken, TokenType tokenType);
-void printfError(const char* errkfmt, ...);
+void printfError(const char* errfmt, ...);
 
 #endif
