@@ -393,7 +393,7 @@ void TestIdentifierExpression() {
     }
 
     ExpressionStatement* es = (ExpressionStatement*)program->statements[0];
-    if(es->nodeType != NC_EXPRESSION) {
+    if(es->nodeType != NC_EXPRESSION_STATEMENT) {
         printfError("program.Statements[0] is not ExpressionStatement. got=%d",
                 es->nodeType);
         exit(1);
@@ -429,7 +429,7 @@ int main() {
     TestNextToken();
     TestLetStatements();
     TestReturnStatements();
-    TestString();
+    //TestString();
     TestIdentifierExpression();
     return 0;
 }

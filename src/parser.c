@@ -4,23 +4,12 @@
 #include "ast.h"
 #include "token.h"
 
-Parser* newParser(Lexer* l) {
-    Parser* p = (Parser*)malloc(sizeof(Parser));
-    p->l = l;
-    p->errors = newErrors();
+void registerPreifix(Parser* p, TokenType tokenType, prefixParseFn fn) {
+    p->prefixParseFns[tokenType] = fn;
+}
 
-    p->curToken = NULL;
-    p->peekToken= NULL;
-
-    for(int i = 0; i < 100; i++) {
-        p->prefixParseFns[i] = NULL;
-        p->infixParseFns[i] = NULL;
-    }
-
-    parseNextToken(p);
-    parseNextToken(p);
-
-    return p;
+void registerInfix(Parser* p, TokenType tokenType, prefixParseFn fn) {
+    p->infixParseFns[tokenType] = fn;
 }
 
 void parseNextToken(Parser* p) {
@@ -44,6 +33,14 @@ int expectPeek(Parser* p, TokenType tokenType) {
         peekError(p->errors, p->peekToken, tokenType);
         return 0;
     }
+}
+
+Expression* parseIdentifier(Parser* p) {
+    Identifier* ident = newIdentifier();
+    ident->nodeType = NC_IDENTIFIER;
+    ident->token = p->curToken;
+    ident->value = p->curToken->literal;
+    return (Expression*)ident;
 }
 
 LetStatement* parseLetStatement(Parser* p) {
@@ -81,14 +78,25 @@ ReturnStatement* parseReturnStatement(Parser* p) {
 }
 
 Expression* parseExpression(Parser* p, Precedence precedence) {
-    Expression* e;
-    return e;
+    prefixParseFn prefix = p->prefixParseFns[p->curToken->tokenType];
+
+    if(prefix == NULL) {
+        return NULL;
+    }
+    Expression* leftExp = prefix(p);
+
+    return leftExp;
 }
 
 ExpressionStatement* parseExpressionStatement(Parser* p) {
     ExpressionStatement* estmt = newExpressionStatement();
     estmt->token = p->curToken;
     estmt->expression = parseExpression(p, LOWEST);
+
+    if(peekTokenIs(p, TOKEN_SEMICOLON)) {
+        parseNextToken(p);
+    }
+
     return estmt;
 }
 
@@ -121,10 +129,23 @@ Program* parseProgram(Parser* p) {
     return program;
 }
 
-void registerPreifix(Parser* p, TokenType tokenType, prefixParseFn fn) {
-    p->prefixParseFns[tokenType] = fn;
-}
+Parser* newParser(Lexer* l) {
+    Parser* p = (Parser*)malloc(sizeof(Parser));
+    p->l = l;
+    p->errors = newErrors();
 
-void registerInfix(Parser* p, TokenType tokenType, prefixParseFn fn) {
-    p->infixParseFns[tokenType] = fn;
+    p->curToken = NULL;
+    p->peekToken= NULL;
+
+    for(int i = 0; i < 100; i++) {
+        p->prefixParseFns[i] = NULL;
+        p->infixParseFns[i] = NULL;
+    }
+
+    parseNextToken(p);
+    parseNextToken(p);
+
+    registerPreifix(p, TOKEN_IDENT, parseIdentifier);
+
+    return p;
 }
