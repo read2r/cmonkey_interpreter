@@ -137,14 +137,14 @@ char* TokenLiteral_Program(Node* node) {
 
 Program* newProgram() {
     Program* program = (Program*)malloc(sizeof(Program));
-    program->nodeType = CODE_PROGRAM; 
+    program->nodeType = NC_PROGRAM; 
     program->len = 0;
     return program;
 }
 
 LetStatement* newLetStatement() {
     LetStatement* lstmt = (LetStatement*)malloc(sizeof(LetStatement));
-    lstmt->nodeType = CODE_LET_STATEMENT;
+    lstmt->nodeType = NC_LET_STATEMENT;
     lstmt->token = NULL;
     lstmt->name = NULL;
     lstmt->value = NULL;
@@ -153,7 +153,7 @@ LetStatement* newLetStatement() {
 
 Identifier* newIdentifier() {
     Identifier* ident = (Identifier*)malloc(sizeof(Identifier));
-    ident->nodeType = CODE_IDENTIFIER;
+    ident->nodeType = NC_IDENTIFIER;
     ident->token = NULL;
     ident->value = NULL;
     return ident;
@@ -161,10 +161,18 @@ Identifier* newIdentifier() {
 
 ReturnStatement* newReturnStatement() {
     ReturnStatement* rstmt = (ReturnStatement*)malloc(sizeof(ReturnStatement));
-    rstmt->nodeType = CODE_RETURN_STATEMENT;
+    rstmt->nodeType = NC_RETURN_STATEMENT;
     rstmt->token = NULL;
     rstmt->returnValue = NULL;
     return rstmt;
+}
+
+ExpressionStatement* newExpressionStatement() {
+    ExpressionStatement* estmt = (ExpressionStatement*)malloc(sizeof(ExpressionStatement));
+    estmt->nodeType = NC_EXPRESSION_STATEMENT;
+    estmt->token = NULL;
+    estmt->expression = NULL;
+    return estmt;
 }
 
 void InitTokenLiteralList() {
@@ -174,30 +182,27 @@ void InitTokenLiteralList() {
         ToStringList[i] = NULL;
     }
 
-    TokenLiteralList[CODE_PROGRAM] = TokenLiteral_Program; 
-    TokenLiteralList[CODE_LET_STATEMENT] = TokenLiteral_LetStatement;
-    TokenLiteralList[CODE_IDENTIFIER] = TokenLiteral_Identifier;
-    TokenLiteralList[CODE_RETURN_STATEMENT] = TokenLiteral_ReturnStatement;
-    TokenLiteralList[CODE_EXPRESSION] = TokenLiteral_ExpressionStatement;
+    TokenLiteralList[NC_PROGRAM] = TokenLiteral_Program; 
+    TokenLiteralList[NC_LET_STATEMENT] = TokenLiteral_LetStatement;
+    TokenLiteralList[NC_IDENTIFIER] = TokenLiteral_Identifier;
+    TokenLiteralList[NC_RETURN_STATEMENT] = TokenLiteral_ReturnStatement;
+    TokenLiteralList[NC_EXPRESSION] = TokenLiteral_ExpressionStatement;
 
-    NodeTypeString[CODE_PROGRAM] = "Program";
-    NodeTypeString[CODE_LET_STATEMENT] = "LetStatement";
-    NodeTypeString[CODE_IDENTIFIER] = "Identifier";
-    NodeTypeString[CODE_RETURN_STATEMENT] = "ReturnStatement";
+    NodeTypeString[NC_PROGRAM] = "Program";
+    NodeTypeString[NC_LET_STATEMENT] = "LetStatement";
+    NodeTypeString[NC_IDENTIFIER] = "Identifier";
+    NodeTypeString[NC_RETURN_STATEMENT] = "ReturnStatement";
 
-    ToStringList[CODE_PROGRAM] = ToString_Program;
-    ToStringList[CODE_LET_STATEMENT] = ToString_LetStatement;
-    ToStringList[CODE_IDENTIFIER] = ToString_Identifier;
-    ToStringList[CODE_RETURN_STATEMENT] = ToString_ReturnStatement;
-    ToStringList[CODE_EXPRESSION] = ToString_ExpressionStatement;
+    ToStringList[NC_PROGRAM] = ToString_Program;
+    ToStringList[NC_LET_STATEMENT] = ToString_LetStatement;
+    ToStringList[NC_IDENTIFIER] = ToString_Identifier;
+    ToStringList[NC_RETURN_STATEMENT] = ToString_ReturnStatement;
+    ToStringList[NC_EXPRESSION] = ToString_ExpressionStatement;
 }
 
 char* TokenLiteral(Node* node) {
     NodeType nt = node->nodeType;
-    if(TokenLiteralList[nt] != NULL) {
-        return TokenLiteralList[nt](node);
-    }
-    return NULL;
+    return TokenLiteralList[nt](node);
 }
 
 char* ToString(Node* node) {

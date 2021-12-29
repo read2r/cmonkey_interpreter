@@ -5,17 +5,16 @@
 
 #define STATEMENT_LEN 100
 
-typedef int NodeType;
-
-enum {
-    CODE_NODE,
-    CODE_STATEMENT,
-    CODE_EXPRESSION,
-    CODE_PROGRAM,
-    CODE_LET_STATEMENT,
-    CODE_IDENTIFIER,
-    CODE_RETURN_STATEMENT,
-};
+typedef enum _NodeCode {
+    NC_NODE,
+    NC_STATEMENT,
+    NC_EXPRESSION,
+    NC_PROGRAM,
+    NC_LET_STATEMENT,
+    NC_IDENTIFIER,
+    NC_RETURN_STATEMENT,
+    NC_EXPRESSION_STATEMENT,
+} NodeType;
 
 typedef struct _Node {
     NodeType nodeType;
@@ -59,6 +58,7 @@ typedef struct _ReturnStatement {
 
 // Statement
 typedef struct _ExpressionStatement {
+    NodeType nodeType;
     Token* token;
     Expression* expression;
 } ExpressionStatement;
@@ -76,6 +76,7 @@ Program* newProgram();
 Identifier* newIdentifier();
 LetStatement* newLetStatement();
 ReturnStatement* newReturnStatement();
+ExpressionStatement* newExpressionStatement();
 
 fptrTokenLiteral TokenLiteralList[100];
 fptrToString ToStringList[100];

@@ -5,16 +5,50 @@
 #define TOKENTYPES_LEN 100
 #define KEYWORDS_LEN 100
 
-typedef char* TokenType;
-typedef int TokenTypeCode;
+typedef enum _TokenType{
+    TOKEN_ILLEGAL = 0,
+    TOKEN_EOF,
+
+    TOKEN_IDENT,
+    TOKEN_INT,
+
+    TOKEN_ASSIGN,
+    TOKEN_PLUS,
+    TOKEN_MINUS,
+    TOKEN_BANG,
+    TOKEN_ASTERISK,
+    TOKEN_SLASH,
+
+    TOKEN_LT,
+    TOKEN_GT,
+
+    TOKEN_EQ,
+    TOKEN_NOT_EQ,
+
+    TOKEN_COMMA,
+    TOKEN_SEMICOLON,
+
+    TOKEN_LPAREN,
+    TOKEN_RPAREN,
+    TOKEN_LBRACE,
+    TOKEN_RBRACE,
+
+    TOKEN_FUNCTION,
+    TOKEN_LET,
+    TOKEN_TRUE,
+    TOKEN_FALSE,
+    TOKEN_IF,
+    TOKEN_ELSE,
+    TOKEN_RETURN,
+} TokenType;
 
 typedef struct _Token {
-    TokenType type;
+    TokenType tokenType;
     char* literal;
 } Token;
 
 typedef struct _Keyword {
-    TokenTypeCode typeCode;
+    TokenType tokenType;
     char* literal;
 } Keyword;
 
@@ -23,46 +57,11 @@ typedef struct _Keywords {
     Keyword* arr[KEYWORDS_LEN];
 } Keywords;
 
-enum {
-    CODE_ILLEGAL = 0,
-    CODE_EOF,
 
-    CODE_IDENT,
-    CODE_INT,
-
-    CODE_ASSIGN,
-    CODE_PLUS,
-    CODE_MINUS,
-    CODE_BANG,
-    CODE_ASTERISK,
-    CODE_SLASH,
-
-    CODE_LT,
-    CODE_GT,
-
-    CODE_EQ,
-    CODE_NOT_EQ,
-
-    CODE_COMMA,
-    CODE_SEMICOLON,
-
-    CODE_LPAREN,
-    CODE_RPAREN,
-    CODE_LBRACE,
-    CODE_RBRACE,
-
-    CODE_FUNCTION,
-    CODE_LET,
-    CODE_TRUE,
-    CODE_FALSE,
-    CODE_IF,
-    CODE_ELSE,
-    CODE_RETURN,
-};
-
-TokenType TOKENTYPES[TOKENTYPES_LEN];
 Keywords* KEYWORDS;
+char* TokenTypeStringList[100];
 
+char* getTokenTypeString();
 void InitializeTokenTypes();
 void InitializeKeywords();
 TokenType LookupIdent(char* ident);

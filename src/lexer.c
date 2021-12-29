@@ -41,76 +41,76 @@ Token* nextToken(Lexer* l) {
         if(peekChar(l) == '=') {
             tok = (Token*)malloc(sizeof(Token));
             readChar(l);
-            tok->type = TOKENTYPES[CODE_EQ];
+            tok->tokenType = TOKEN_EQ;
             tok->literal = (char*)malloc(sizeof(char) * 3);
             strcpy(tok->literal, "==");
         } else {
-            tok = newToken(TOKENTYPES[CODE_ASSIGN], l->ch);
+            tok = newToken(TOKEN_ASSIGN, l->ch);
         }
         break;
     case '+':
-        tok = newToken(TOKENTYPES[CODE_PLUS], l->ch);
+        tok = newToken(TOKEN_PLUS, l->ch);
         break;
     case '-':
-        tok = newToken(TOKENTYPES[CODE_MINUS], l->ch);
+        tok = newToken(TOKEN_MINUS, l->ch);
         break;
     case '!':
         if(peekChar(l) == '=') {
             tok = (Token*)malloc(sizeof(Token));
             readChar(l);
-            tok->type = TOKENTYPES[CODE_NOT_EQ];
+            tok->tokenType = TOKEN_NOT_EQ;
             tok->literal = (char*)malloc(sizeof(char) * 3);
             strcpy(tok->literal, "!=");
         } else {
-            tok = newToken(TOKENTYPES[CODE_BANG], l->ch);
+            tok = newToken(TOKEN_BANG, l->ch);
         }
         break;
     case '/':
-        tok = newToken(TOKENTYPES[CODE_SLASH], l->ch);
+        tok = newToken(TOKEN_SLASH, l->ch);
         break;
     case '*':
-        tok = newToken(TOKENTYPES[CODE_ASTERISK], l->ch);
+        tok = newToken(TOKEN_ASTERISK, l->ch);
         break;
     case '<':
-        tok = newToken(TOKENTYPES[CODE_LT], l->ch);
+        tok = newToken(TOKEN_LT, l->ch);
         break;
     case '>':
-        tok = newToken(TOKENTYPES[CODE_GT], l->ch);
+        tok = newToken(TOKEN_GT, l->ch);
         break;
     case ';':
-        tok = newToken(TOKENTYPES[CODE_SEMICOLON], l->ch);
+        tok = newToken(TOKEN_SEMICOLON, l->ch);
         break;
     case '(':
-        tok = newToken(TOKENTYPES[CODE_LPAREN], l->ch);
+        tok = newToken(TOKEN_LPAREN, l->ch);
         break;
     case ')':
-        tok = newToken(TOKENTYPES[CODE_RPAREN], l->ch);
+        tok = newToken(TOKEN_RPAREN, l->ch);
         break;
     case ',':
-        tok = newToken(TOKENTYPES[CODE_COMMA], l->ch);
+        tok = newToken(TOKEN_COMMA, l->ch);
         break;
     case '{':
-        tok = newToken(TOKENTYPES[CODE_LBRACE], l->ch);
+        tok = newToken(TOKEN_LBRACE, l->ch);
         break;
     case '}':
-        tok = newToken(TOKENTYPES[CODE_RBRACE], l->ch);
+        tok = newToken(TOKEN_RBRACE, l->ch);
         break;
     case 0:
-        tok = newToken(TOKENTYPES[CODE_EOF], ' ');
+        tok = newToken(TOKEN_EOF, ' ');
         break;
     default:
         if(isLetter(l->ch)) {
             tok = (Token*)malloc(sizeof(Token));
             tok->literal = readIdentifier(l);
-            tok->type = LookupIdent(tok->literal);
+            tok->tokenType = LookupIdent(tok->literal);
             return tok;
         } else if(isDigit(l->ch)) {
             tok = (Token*)malloc(sizeof(Token));
-            tok->type = TOKENTYPES[CODE_INT];
+            tok->tokenType = TOKEN_INT;
             tok->literal = readNumber(l);
             return tok;
         } else {
-            tok = newToken(TOKENTYPES[CODE_ILLEGAL], l->ch);
+            tok = newToken(TOKEN_ILLEGAL, l->ch);
         }
     }
 
@@ -120,7 +120,7 @@ Token* nextToken(Lexer* l) {
 
 Token* newToken(TokenType tokenType, char ch) {
     Token* nt = (Token*)malloc(sizeof(Token));
-    nt->type = tokenType;
+    nt->tokenType = tokenType;
     nt->literal = (char*)malloc(sizeof(char) * 2);
     nt->literal[0] = ch;
     nt->literal[1] = '\0';

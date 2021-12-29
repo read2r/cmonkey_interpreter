@@ -8,10 +8,8 @@
 
 void scanInput(char* input, int inputLen) {
     int idx = 0;
-    char ch;
-    while((ch = getchar()) != '\n' && idx < inputLen-1) {
-        input[idx] = ch;
-        idx++;
+    char ch; 
+    while((ch = getchar()) != '\n' && idx < inputLen-1) { input[idx] = ch; idx++;
     }
     input[idx] = '\0';
 }
@@ -36,11 +34,12 @@ void start() {
         while(1) {
             Token* tok = nextToken(l);
 
-            if(tok->type == TOKENTYPES[CODE_EOF]) {
+            if(tok->tokenType == TOKEN_EOF) {
                 break;
             }
 
-            printf("{ Token : %-8s , Literal : %s } \n", tok->type, tok->literal);
+            printf("{ Token : %-8s , Literal : %s } \n", 
+                    getTokenTypeString(tok->tokenType), tok->literal);
         }
     }
 }

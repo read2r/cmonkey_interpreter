@@ -61,7 +61,8 @@ void appendError(Errors* errors, Error error) {
 
 void peekError(Errors* errors, Token* peekToken, TokenType tokenType) {
     Error error = newError(NULL);
-    int errlen = sprintf(error, "expected next token to be '%s', got '%s' instead", tokenType, peekToken->type);
+    int errlen = sprintf(error, "expected next token to be '%s', got '%s' instead",
+            getTokenTypeString(tokenType), getTokenTypeString(peekToken->tokenType));
     error[errlen] = '\0';
     appendError(errors, error);
 }

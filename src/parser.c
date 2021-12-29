@@ -7,9 +7,15 @@
 Parser* newParser(Lexer* l) {
     Parser* p = (Parser*)malloc(sizeof(Parser));
     p->l = l;
+    p->errors = newErrors();
+
     p->curToken = NULL;
     p->peekToken= NULL;
-    p->errors = newErrors();
+
+    for(int i = 0; i < 100; i++) {
+        p->prefixParseFns[i] = NULL;
+        p->infixParseFns[i] = NULL;
+    }
 
     parseNextToken(p);
     parseNextToken(p);
@@ -23,11 +29,11 @@ void parseNextToken(Parser* p) {
 }
 
 int curTokenIs(Parser* p, TokenType tokenType) {
-    return p->curToken->type == tokenType;
+    return p->curToken->tokenType == tokenType;
 }
 
 int peekTokenIs(Parser* p, TokenType tokenType) {
-    return p->peekToken->type == tokenType;
+    return p->peekToken->tokenType == tokenType;
 }
 
 int expectPeek(Parser* p, TokenType tokenType) {
@@ -44,7 +50,7 @@ LetStatement* parseLetStatement(Parser* p) {
     LetStatement* lstmt = newLetStatement();
     lstmt->token = p->curToken;
 
-    if(!expectPeek(p, TOKENTYPES[CODE_IDENT])) {
+    if(!expectPeek(p, TOKEN_IDENT)) {
         return NULL;
     }
 
@@ -53,7 +59,7 @@ LetStatement* parseLetStatement(Parser* p) {
     ident->value = p->curToken->literal;
     lstmt->name = ident;
 
-    while(!curTokenIs(p, TOKENTYPES[CODE_SEMICOLON])) {
+    while(!curTokenIs(p, TOKEN_SEMICOLON)) {
         parseNextToken(p);
     }
 
@@ -62,25 +68,39 @@ LetStatement* parseLetStatement(Parser* p) {
 
 ReturnStatement* parseReturnStatement(Parser* p) {
     ReturnStatement* rstmt = newReturnStatement();
-    rstmt->nodeType = CODE_RETURN_STATEMENT;
+    rstmt->nodeType = NC_RETURN_STATEMENT;
     rstmt->token = p->curToken;
 
     parseNextToken(p);
 
-    while(!curTokenIs(p, TOKENTYPES[CODE_SEMICOLON])) {
+    while(!curTokenIs(p, TOKEN_SEMICOLON)) {
         parseNextToken(p);
     }
 
     return rstmt;
 }
 
+Expression* parseExpression(Parser* p, Precedence precedence) {
+    Expression* e;
+    return e;
+}
+
+ExpressionStatement* parseExpressionStatement(Parser* p) {
+    ExpressionStatement* estmt = newExpressionStatement();
+    estmt->token = p->curToken;
+    estmt->expression = parseExpression(p, LOWEST);
+    return estmt;
+}
+
 Statement* parseStatement(Parser* p) {
     Statement* stmt = NULL;
 
-    if(p->curToken->type == TOKENTYPES[CODE_LET]) {
+    if(p->curToken->tokenType == TOKEN_LET) {
         stmt = (Statement*)parseLetStatement(p);
-    } else if(p->curToken->type == TOKENTYPES[CODE_RETURN]) {
+    } else if(p->curToken->tokenType == TOKEN_RETURN) {
         stmt = (Statement*)parseReturnStatement(p);
+    } else {
+        stmt = (Statement*)parseExpressionStatement(p);
     }
 
     return stmt;
@@ -90,7 +110,7 @@ Program* parseProgram(Parser* p) {
     Program* program = newProgram();
     Statement* stmt;
 
-    while(p->curToken->type != TOKENTYPES[CODE_EOF]) {
+    while(p->curToken->tokenType != TOKEN_EOF) {
         stmt = parseStatement(p);
         if(stmt != NULL) {
             appendStatement(program, stmt);
@@ -99,4 +119,12 @@ Program* parseProgram(Parser* p) {
     }
 
     return program;
+}
+
+void registerPreifix(Parser* p, TokenType tokenType, prefixParseFn fn) {
+    p->prefixParseFns[tokenType] = fn;
+}
+
+void registerInfix(Parser* p, TokenType tokenType, prefixParseFn fn) {
+    p->infixParseFns[tokenType] = fn;
 }

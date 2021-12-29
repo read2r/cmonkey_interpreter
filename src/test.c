@@ -131,102 +131,102 @@ void TestNextToken() {
 
     TestList* tests = newTestList();
     // =+(){},;
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_ASSIGN], "="));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_PLUS], "+"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_LPAREN], "("));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_RPAREN], ")"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_LBRACE], "{"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_RBRACE], "}"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_COMMA], ","));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_ASSIGN, "="));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_PLUS, "+"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_LPAREN, "("));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_RPAREN, ")"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_LBRACE, "{"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_RBRACE, "}"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_COMMA, ","));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_SEMICOLON, ";"));
     // let five = 5;
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_LET], "let"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_IDENT], "five"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_ASSIGN], "="));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_INT], "5"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_LET, "let"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_IDENT, "five"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_ASSIGN, "="));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_INT, "5"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_SEMICOLON, ";"));
     // let ten = 10;
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_LET], "let"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_IDENT], "ten"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_ASSIGN], "="));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_INT], "10"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_LET, "let"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_IDENT, "ten"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_ASSIGN, "="));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_INT, "10"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_SEMICOLON, ";"));
     // let add = fn(x, y) {
     //     x + y;
     // };
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_LET], "let"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_IDENT], "add"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_ASSIGN], "="));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_FUNCTION], "fn"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_LPAREN], "("));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_IDENT], "x"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_COMMA], ","));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_IDENT], "y"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_RPAREN], ")"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_LBRACE], "{"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_IDENT], "x"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_PLUS], "+"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_IDENT], "y"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_SEMICOLON], ";"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_RBRACE], "}"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_LET, "let"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_IDENT, "add"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_ASSIGN, "="));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_FUNCTION, "fn"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_LPAREN, "("));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_IDENT, "x"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_COMMA, ","));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_IDENT, "y"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_RPAREN, ")"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_LBRACE, "{"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_IDENT, "x"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_PLUS, "+"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_IDENT, "y"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_SEMICOLON, ";"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_RBRACE, "}"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_SEMICOLON, ";"));
     // let result = add(five, ten);
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_LET], "let"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_IDENT], "result"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_ASSIGN], "="));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_IDENT], "add"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_LPAREN], "("));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_IDENT], "five"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_COMMA], ","));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_IDENT], "ten"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_RPAREN], ")"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_LET, "let"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_IDENT, "result"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_ASSIGN, "="));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_IDENT, "add"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_LPAREN, "("));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_IDENT, "five"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_COMMA, ","));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_IDENT, "ten"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_RPAREN, ")"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_SEMICOLON, ";"));
     // !-*5/;
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_BANG], "!"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_MINUS], "-"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_ASTERISK], "*"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_INT], "5"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_SLASH], "/"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_BANG, "!"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_MINUS, "-"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_ASTERISK, "*"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_INT, "5"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_SLASH, "/"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_SEMICOLON, ";"));
     // 5 < 10 > 5;
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_INT], "5"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_LT], "<"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_INT], "10"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_GT], ">"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_INT], "5"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_INT, "5"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_LT, "<"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_INT, "10"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_GT, ">"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_INT, "5"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_SEMICOLON, ";"));
     // if (5 < 10) {
     //     return true;
     // } else {
     //     return false;
     // }
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_IF], "if"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_LPAREN], "("));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_INT], "5"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_LT], "<"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_INT], "10"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_RPAREN], ")"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_LBRACE], "{"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_RETURN], "return"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_TRUE], "true"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_SEMICOLON], ";"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_RBRACE], "}"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_ELSE], "else"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_LBRACE], "{"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_RETURN], "return"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_FALSE], "false"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_SEMICOLON], ";"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_RBRACE], "}"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_IF, "if"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_LPAREN, "("));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_INT, "5"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_LT, "<"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_INT, "10"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_RPAREN, ")"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_LBRACE, "{"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_RETURN, "return"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_TRUE, "true"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_SEMICOLON, ";"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_RBRACE, "}"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_ELSE, "else"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_LBRACE, "{"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_RETURN, "return"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_FALSE, "false"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_SEMICOLON, ";"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_RBRACE, "}"));
     // 10 == 10;
     // 10 != 9;
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_INT], "10"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_EQ], "=="));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_INT], "10"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_SEMICOLON], ";"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_INT], "10"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_NOT_EQ], "!="));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_INT], "9"));
-    appendTest(tests, (Test*)newExpectedToken(TOKENTYPES[CODE_SEMICOLON], ";"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_INT, "10"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_EQ, "=="));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_INT, "10"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_SEMICOLON, ";"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_INT, "10"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_NOT_EQ, "!="));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_INT, "9"));
+    appendTest(tests, (Test*)newExpectedToken(TOKEN_SEMICOLON, ";"));
 
     Lexer* l = newLexer(input);
 
@@ -236,9 +236,9 @@ void TestNextToken() {
 
         // comparing the memory addresses, not the contents of two.
         // same TokenType, same address.
-        if(!(tok->type == et->expectedType)) {
+        if(!(tok->tokenType == et->expectedType)) {
             printfError("tests[%d] tokentype wrong. expected=%s, got=%s.\n", 
-                    i, et->expectedType, tok->type);
+                    i, et->expectedType, tok->tokenType);
             exit(1);
         }
 
@@ -266,7 +266,7 @@ int TestLetStatement(Statement* s, const char* name) {
     }
 
     LetStatement* letStmt = (LetStatement*)s;
-    if(letStmt->nodeType != CODE_LET_STATEMENT) {
+    if(letStmt->nodeType != NC_LET_STATEMENT) {
         printfError("s not LetStatement. got=%d\n", s->nodeType);
         return 0;
     }
@@ -345,7 +345,7 @@ void TestReturnStatements() {
     for(int i = 0; i < program->len; i++) {
         ReturnStatement* returnStmt = (ReturnStatement*)program->statements[i];
         NodeType nt = returnStmt->nodeType;
-        if(nt != CODE_RETURN_STATEMENT) {
+        if(nt != NC_RETURN_STATEMENT) {
             printfError("stmt not ReturnStatement. got=%s\n", 
                     NodeTypeString[returnStmt->nodeType]);
             continue;
@@ -370,10 +370,48 @@ void TestString() {
     Program* program = parseProgram(p);
     checkParserErrors(p);
     
-    printf("%s\n", ToString((Node*)program));
-    printf("%s\n", input);
     if(strcmp(ToString((Node*)program), input)) {
         printfError("program.String() wrong. get=%s", ToString((Node*)program));
+        exit(1);
+    }
+
+    printf("test ok\n");
+}
+
+void TestIdentifierExpression() {
+    char* input = "foobar;";
+
+    Lexer* l = newLexer(input);
+    Parser* p = newParser(l);
+
+    Program* program = parseProgram(p);
+    checkParserErrors(p);
+    
+    if(program->len != 1) {
+        printfError("program has not enough statements. got=%d", program->len);
+        exit(1);
+    }
+
+    ExpressionStatement* es = (ExpressionStatement*)program->statements[0];
+    if(es->nodeType != NC_EXPRESSION) {
+        printfError("program.Statements[0] is not ExpressionStatement. got=%d",
+                es->nodeType);
+        exit(1);
+    }
+
+    Identifier* ident = (Identifier*)(es->expression);
+    if(ident->nodeType != NC_IDENTIFIER) {
+        printfError("exp not Identifier, got=%s", ident->nodeType);
+        exit(1);
+    }
+
+    if(strcmp(ident->value, "foobar")) {
+        printfError("ident->TokenLiteral not foobar. got=%s", TokenLiteral((Node*)ident));
+        exit(1);
+    }
+
+    if(strcmp(TokenLiteral((Node*)ident), "foobar")) {
+        printfError("ident->TokenLiteral not foobar. got=%s", TokenLiteral((Node*)ident));
         exit(1);
     }
 
@@ -392,5 +430,6 @@ int main() {
     TestLetStatements();
     TestReturnStatements();
     TestString();
+    TestIdentifierExpression();
     return 0;
 }
