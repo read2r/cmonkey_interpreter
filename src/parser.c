@@ -35,6 +35,10 @@ int expectPeek(Parser* p, TokenType tokenType) {
     }
 }
 
+Expression* parseIntegerLiteral(Parser* p) {
+    IntegerLiteral* lit = newIntegerLiteral();
+}
+
 Expression* parseIdentifier(Parser* p) {
     Identifier* ident = newIdentifier();
     ident->nodeType = NC_IDENTIFIER;

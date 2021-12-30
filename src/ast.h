@@ -14,6 +14,7 @@ typedef enum _NodeCode {
     NC_IDENTIFIER,
     NC_RETURN_STATEMENT,
     NC_EXPRESSION_STATEMENT,
+    NC_INTEGER_LITERAL,
 } NodeType;
 
 typedef struct _Node {
@@ -40,6 +41,13 @@ typedef struct _Identifier {
     Token* token; // IDENT Token;
     char* value;
 } Identifier;
+
+// Expression
+typedef struct _IntegerLiteral {
+    NodeType nodeType;
+    Token* token;
+    int value;
+} IntegerLiteral;
 
 // Statement
 typedef struct _LetStatement {
@@ -77,6 +85,7 @@ Identifier* newIdentifier();
 LetStatement* newLetStatement();
 ReturnStatement* newReturnStatement();
 ExpressionStatement* newExpressionStatement();
+IntegerLiteral* newIntegerLiteral();
 
 fptrTokenLiteral TokenLiteralList[100];
 fptrToString ToStringList[100];

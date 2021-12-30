@@ -43,6 +43,15 @@ void writeString(Buffer* buf, const char* str) {
     buf->len++;
 }
 
+char* ToString_IntegerLiteral(Node* node) {
+    IntegerLiteral* il = (IntegerLiteral*)node;
+    Buffer* buf = newBuffer();
+
+    writeString(buf, TokenLiteral(node));
+
+    return ToString_Buffer(buf);
+}
+
 char* ToString_ExpressionStatement(Node* node) {
     ExpressionStatement* es = (ExpressionStatement*)node;
 
@@ -103,6 +112,11 @@ char* ToString_Program(Node* node) {
     }
 
     return ToString_Buffer(buf);
+}
+
+char* TokenLiteral_IntergerLiteral(Node* node) {
+    IntegerLiteral* il = (IntegerLiteral*)node;
+    return il->token->literal;
 }
 
 char* TokenLiteral_ExpressionStatement(Node* node) {
@@ -175,6 +189,13 @@ ExpressionStatement* newExpressionStatement() {
     return estmt;
 }
 
+IntegerLiteral* newIntegerLiteral() {
+    IntegerLiteral* il = (IntegerLiteral*)malloc(sizeof(IntegerLiteral));
+    il->nodeType = NC_INTEGER_LITERAL;
+    il->token = NULL;
+    return il;
+}
+
 void InitTokenLiteralList() {
     for(int i = 0; i < 0; i++) {
         TokenLiteralList[i] = NULL;
@@ -186,18 +207,22 @@ void InitTokenLiteralList() {
     TokenLiteralList[NC_LET_STATEMENT] = TokenLiteral_LetStatement;
     TokenLiteralList[NC_IDENTIFIER] = TokenLiteral_Identifier;
     TokenLiteralList[NC_RETURN_STATEMENT] = TokenLiteral_ReturnStatement;
-    TokenLiteralList[NC_EXPRESSION] = TokenLiteral_ExpressionStatement;
+    TokenLiteralList[NC_EXPRESSION_STATEMENT] = TokenLiteral_ExpressionStatement;
+    TokenLiteralList[NC_INTEGER_LITERAL] = TokenLiteral_IntergerLiteral;
 
     NodeTypeString[NC_PROGRAM] = "Program";
     NodeTypeString[NC_LET_STATEMENT] = "LetStatement";
     NodeTypeString[NC_IDENTIFIER] = "Identifier";
     NodeTypeString[NC_RETURN_STATEMENT] = "ReturnStatement";
+    NodeTypeString[NC_EXPRESSION_STATEMENT] = "ExpressionStatement";
+    NodeTypeString[NC_INTEGER_LITERAL] = "IntegerLiteral";
 
     ToStringList[NC_PROGRAM] = ToString_Program;
     ToStringList[NC_LET_STATEMENT] = ToString_LetStatement;
     ToStringList[NC_IDENTIFIER] = ToString_Identifier;
     ToStringList[NC_RETURN_STATEMENT] = ToString_ReturnStatement;
-    ToStringList[NC_EXPRESSION] = ToString_ExpressionStatement;
+    ToStringList[NC_EXPRESSION_STATEMENT] = ToString_ExpressionStatement;
+    ToStringList[NC_INTEGER_LITERAL] = ToString_IntegerLiteral;
 }
 
 char* TokenLiteral(Node* node) {

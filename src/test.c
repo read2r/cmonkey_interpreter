@@ -418,6 +418,29 @@ void TestIdentifierExpression() {
     printf("test ok\n");
 }
 
+void TestIntegerLiteralExpression() {
+    char* input = "5;";
+
+    Lexer* l = newLexer(input);
+    Parser* p = newParser(l);
+
+    Program* program = newProgram(p);
+    checkParserErrors(p);
+
+    if(program->len != 1) {
+        printfError("program has not enough statements. got=%d",
+                program->len);
+        exit(1);
+    }
+
+    ExpressionStatement* es = (ExpressionStatement*)(program->statements[0]);
+    if(es->nodeType == NC_EXPRESSION_STATEMENT) {
+        printfError("program.Statements[0] is not ExpressionStatement. got=%d",
+                program->statements[0]->nodeType);
+        exit(1);
+    }
+}
+
 void Init() {
     InitializeTokenTypes();
     InitializeKeywords();
