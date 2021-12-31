@@ -10,7 +10,6 @@ unsigned int getStringLen(Buffer* buf) {
     }
     return stringLen;
 }
-
 char* ToString_Buffer(Buffer* buf) {
     unsigned int stringLen = getStringLen(buf);
     char* string = (char*)malloc(sizeof(char) * (stringLen + 1));
@@ -63,11 +62,11 @@ char* ToString_ReturnStatement(Node* node) {
     ReturnStatement* rs = (ReturnStatement*)node;
     Buffer* buf = newBuffer();
 
-    writeString(buf, TokenLiteral((Node*)rs));
+    writeString(buf, TokenLiteral(rs));
     writeString(buf, " ");
 
     if(rs->returnValue != NULL) {
-        writeString(buf, ToString((Node*)rs->returnValue));
+        writeString(buf, ToString(rs->returnValue));
     }
 
     writeString(buf, ";");
@@ -88,14 +87,26 @@ char* ToString_LetStatement(Node* node) {
 
     writeString(buf, TokenLiteral(node));
     writeString(buf, " ");
-    writeString(buf, ToString((Node*)ls->name));
+    writeString(buf, ToString(ls->name));
     writeString(buf, " = ");
 
     if(ls->value != NULL) {
-        writeString(buf, ToString((Node*)ls->value));
+        writeString(buf, ToString(ls->value));
     }
 
     writeString(buf, ";");
+
+    return ToString_Buffer(buf);
+}
+
+char* ToString_PrefixExpression(Node* node) {
+    PrefixExpression* pe = (PrefixExpression*)node;
+    Buffer* buf = newBuffer();
+
+    writeString(buf, "(");
+    writeString(buf, pe->op);
+    writeString(buf, ToString(pe->right));
+    writeString(buf, ")");
 
     return ToString_Buffer(buf);
 }
@@ -105,7 +116,7 @@ char* ToString_Program(Node* node) {
     Buffer* buf = newBuffer();
 
     for(int i = 0; i < p->len; i++) {
-        writeString(buf, ToString((Node*)p->statements[i]));
+        writeString(buf, ToString(p->statements[i]));
     }
 
     return ToString_Buffer(buf);
@@ -135,6 +146,11 @@ char* TokenLiteral_LetStatement(Node* node) {
     LetStatement* ls = (LetStatement*)node;
     return ls->token->literal;
 } 
+
+char* TokenLiteral_PrefixExpression(Node* node) {
+    PrefixExpression* pe = (PrefixExpression*)node;
+    return pe->token->literal;
+}
 
 char* TokenLiteral_Program(Node* node) {
     Program* p = (Program*)node;
@@ -193,6 +209,14 @@ IntegerLiteral* newIntegerLiteral() {
     return il;
 }
 
+PrefixExpression* newPrefixExpression() {
+    PrefixExpression* pe = (PrefixExpression*)malloc(sizeof(PrefixExpression));
+    pe->nodeType = NC_PREFIX_EXPRESSION;
+    pe->op = NULL;
+    pe->right = NULL;
+    return pe;
+}
+
 char* getNodeTypeString(NodeType nodeType) {
     return NodeTypeString[nodeType];
 }
@@ -210,6 +234,7 @@ void InitTokenLiteralList() {
     TokenLiteralList[NC_RETURN_STATEMENT] = TokenLiteral_ReturnStatement;
     TokenLiteralList[NC_EXPRESSION_STATEMENT] = TokenLiteral_ExpressionStatement;
     TokenLiteralList[NC_INTEGER_LITERAL] = TokenLiteral_IntergerLiteral;
+    TokenLiteralList[NC_PREFIX_EXPRESSION] = TokenLiteral_PrefixExpression;
 
     NodeTypeString[NC_PROGRAM] = "Program";
     NodeTypeString[NC_LET_STATEMENT] = "LetStatement";
@@ -217,6 +242,7 @@ void InitTokenLiteralList() {
     NodeTypeString[NC_RETURN_STATEMENT] = "ReturnStatement";
     NodeTypeString[NC_EXPRESSION_STATEMENT] = "ExpressionStatement";
     NodeTypeString[NC_INTEGER_LITERAL] = "IntegerLiteral";
+    NodeTypeString[NC_PREFIX_EXPRESSION] = "PrefixExpression";
 
     ToStringList[NC_PROGRAM] = ToString_Program;
     ToStringList[NC_LET_STATEMENT] = ToString_LetStatement;
@@ -224,14 +250,15 @@ void InitTokenLiteralList() {
     ToStringList[NC_RETURN_STATEMENT] = ToString_ReturnStatement;
     ToStringList[NC_EXPRESSION_STATEMENT] = ToString_ExpressionStatement;
     ToStringList[NC_INTEGER_LITERAL] = ToString_IntegerLiteral;
+    ToStringList[NC_PREFIX_EXPRESSION] = ToString_PrefixExpression;
 }
 
-char* TokenLiteral(Node* node) {
+char* _TokenLiteral(Node* node) {
     NodeType nt = node->nodeType;
     return TokenLiteralList[nt](node);
 }
 
-char* ToString(Node* node) {
+char* _ToString(Node* node) {
     NodeType nt = node->nodeType;
     return ToStringList[nt](node);
 }

@@ -3,7 +3,8 @@
 
 #include "token.h"
 
-#define STATEMENT_LEN 100
+#define TokenLiteral(x) _TokenLiteral((Node*)x)
+#define ToString(x) _ToString((Node*)x)
 
 typedef enum _NodeCode {
     NC_NODE,
@@ -15,6 +16,7 @@ typedef enum _NodeCode {
     NC_RETURN_STATEMENT,
     NC_EXPRESSION_STATEMENT,
     NC_INTEGER_LITERAL,
+    NC_PREFIX_EXPRESSION,
 } NodeType;
 
 typedef struct _Node {
@@ -32,7 +34,7 @@ typedef struct _Expression {
 typedef struct _Program {
     NodeType nodeType;
     int len;
-    Statement* statements[STATEMENT_LEN];
+    Statement* statements[100];
 } Program;
 
 // Expression
@@ -48,6 +50,14 @@ typedef struct _IntegerLiteral {
     Token* token;
     int value;
 } IntegerLiteral;
+
+// Expression
+typedef struct _PrefixExpression {
+    NodeType nodeType;
+    Token* token;
+    char* op;
+    Expression* right;
+} PrefixExpression;
 
 // Statement
 typedef struct _LetStatement {
@@ -71,7 +81,6 @@ typedef struct _ExpressionStatement {
     Expression* expression;
 } ExpressionStatement;
 
-
 typedef struct _Buffer {
     int len;
     char* arr[512];
@@ -86,18 +95,19 @@ LetStatement* newLetStatement();
 ReturnStatement* newReturnStatement();
 ExpressionStatement* newExpressionStatement();
 IntegerLiteral* newIntegerLiteral();
+PrefixExpression* newPrefixExpression();
 
 fptrTokenLiteral TokenLiteralList[100];
 fptrToString ToStringList[100];
 char* NodeTypeString[100];
 
 void InitToStringList();
-char* ToString(Node* node);
-
 void InitTokenLiteralList();
-char* TokenLiteral(Node* node);
+
 void appendStatement(Program* program, Statement* stmt);
 
+char* _TokenLiteral(Node* node);
 char* getNodeTypeString(NodeType);
+char* _ToString(Node* node);
 
 #endif

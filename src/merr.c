@@ -12,18 +12,16 @@
 #define ANSI_CORLOR_RED     "\x1b[31m"
 #define ANSI_CORLOR_RESET   "\x1b[0m"
 
-Error newError(const char* msg) {
-    Error error = NULL;
-    int errlen = ERROR_SIZE;
+Error newError(const char* errfmt, ...) {
+    char buf[512] = {0,};
+    va_list ap;
 
-    if(msg != NULL)  {
-        errlen = strlen(msg) + 1;
-        error = (char*)malloc(sizeof(char) * errlen);
-        strcpy(error, msg);
-    } else {
-        error = (char*)malloc(sizeof(char) * errlen);
-        memset(error, 0, sizeof(char) * errlen);
-    }
+    va_start(ap, errfmt);
+    vsprintf(buf, errfmt, ap);
+    va_end(ap);
+
+    Error error = (char*)malloc(sizeof(char) * (strlen(buf) + 1));
+    strcpy(error, buf);
 
     return error;
 }

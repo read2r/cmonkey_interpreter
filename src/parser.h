@@ -20,13 +20,13 @@ typedef struct Parser {
 } Parser;
 
 typedef enum _Precedence {
-    LOWEST,
-    EQUALS,
-    LESSGREATER,
-    SUM,
-    PRODUCT,
-    PREFIX,
-    CALL,
+    PR_LOWEST,
+    PR_EQUALS,
+    PR_LESSGREATER,
+    PR_SUM,
+    PR_PRODUCT,
+    PR_PREFIX,
+    PR_CALL,
 } Precedence;
 
 Parser* newParser(Lexer* l);

@@ -84,10 +84,17 @@ ReturnStatement* parseReturnStatement(Parser* p) {
     return rstmt;
 }
 
+
+void noPrefixParseFnError(Parser* p, TokenType t) {
+    Error err = newError("no prefix parse function for %s found", getTokenTypeString(t));
+    appendError(p->errors, err);
+}
+
 Expression* parseExpression(Parser* p, Precedence precedence) {
     prefixParseFn prefix = p->prefixParseFns[p->curToken->tokenType];
 
     if(prefix == NULL) {
+        noPrefixParseFnError(p, p->curToken->tokenType);
         return NULL;
     }
     Expression* leftExp = prefix(p);
@@ -95,10 +102,22 @@ Expression* parseExpression(Parser* p, Precedence precedence) {
     return leftExp;
 }
 
+Expression* parsePrefixExpression(Parser* p) {
+    PrefixExpression* pe = newPrefixExpression();
+    pe->token = p->curToken;
+    pe->op = p->curToken->literal;
+
+    parseNextToken(p);
+    
+    pe->right = parseExpression(p, PR_PREFIX);
+
+    return (Expression*)pe;
+}
+
 ExpressionStatement* parseExpressionStatement(Parser* p) {
     ExpressionStatement* estmt = newExpressionStatement();
     estmt->token = p->curToken;
-    estmt->expression = parseExpression(p, LOWEST);
+    estmt->expression = parseExpression(p, PR_LOWEST);
 
     if(peekTokenIs(p, TOKEN_SEMICOLON)) {
         parseNextToken(p);
@@ -144,16 +163,18 @@ Parser* newParser(Lexer* l) {
     p->curToken = NULL;
     p->peekToken= NULL;
 
+    parseNextToken(p);
+    parseNextToken(p);
+
     for(int i = 0; i < 100; i++) {
         p->prefixParseFns[i] = NULL;
         p->infixParseFns[i] = NULL;
     }
 
-    parseNextToken(p);
-    parseNextToken(p);
-
     registerPrefix(p, TOKEN_IDENT, parseIdentifier);
     registerPrefix(p, TOKEN_INT, parseIntegerLiteral);
+    registerPrefix(p, TOKEN_BANG, parsePrefixExpression);
+    registerPrefix(p, TOKEN_MINUS, parsePrefixExpression);
 
     return p;
 }

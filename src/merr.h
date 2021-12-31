@@ -12,7 +12,7 @@ typedef struct _Errors {
     Error* arr;
 } Errors;
 
-Error newError(const char* msg);
+Error newError(const char* msgfmt, ...);
 Errors* newErrors();
 void freeError(Error error);
 void freeErrors(Errors* errors);

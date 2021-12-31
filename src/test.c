@@ -259,9 +259,9 @@ void TestNextToken() {
 }
 
 int TestLetStatement(Statement* s, const char* name) {
-    if(strcmp(TokenLiteral((Node*)s), "let")) {
+    if(strcmp(TokenLiteral(s), "let")) {
         printfError("1s.TokenLiteral not 'let'. got=%s\n", 
-                TokenLiteral((Node*)s));
+                TokenLiteral(s));
         return 0;
     }
 
@@ -277,9 +277,9 @@ int TestLetStatement(Statement* s, const char* name) {
         return 0;
     }
 
-    if(strcmp(TokenLiteral((Node*)(letStmt->name)), name)) {
+    if(strcmp(TokenLiteral(letStmt->name), name)) {
         printfError("TokenLiteral(letStmt->name) not '%s'. got=%s\n", 
-                name, TokenLiteral((Node*)(letStmt->name)));
+                name, TokenLiteral(letStmt->name));
         return 0;
     }
 
@@ -351,7 +351,7 @@ void TestReturnStatements() {
             continue;
         }
 
-        if(strcmp(TokenLiteral((Node*)returnStmt), "return")) {
+        if(strcmp(TokenLiteral(returnStmt), "return")) {
             printfError("returnStmt.TokenLiteral not 'return', got=%s\n",
                     TokenLiteral((Node*)returnStmt));
             exit(1);
@@ -406,12 +406,12 @@ void TestIdentifierExpression() {
     }
 
     if(strcmp(ident->value, "foobar")) {
-        printfError("ident->TokenLiteral not foobar. got=%s", TokenLiteral((Node*)ident));
+        printfError("ident->TokenLiteral not foobar. got=%s", TokenLiteral(ident));
         exit(1);
     }
 
-    if(strcmp(TokenLiteral((Node*)ident), "foobar")) {
-        printfError("ident->TokenLiteral not foobar. got=%s", TokenLiteral((Node*)ident));
+    if(strcmp(TokenLiteral(ident), "foobar")) {
+        printfError("ident->TokenLiteral not foobar. got=%s", TokenLiteral(ident));
         exit(1);
     }
 
@@ -452,10 +452,72 @@ void TestIntegerLiteralExpression() {
         exit(1);
     }
 
-    if(strcmp(TokenLiteral((Node*)literal), "5")) {
+    if(strcmp(TokenLiteral(literal), "5")) {
         printf("literal.TokenLiteral not %s. got=%s", "5",
-                TokenLiteral((Node*)literal));
+                TokenLiteral(literal));
         exit(1);
+    }
+
+    printf("test ok\n");
+}
+
+int testIntegerLiteral(Expression* e, int value) {
+    IntegerLiteral* il = (IntegerLiteral*)e;
+    if(il->nodeType != NC_INTEGER_LITERAL) {
+        printfError("il not IntegerLiteral. got=%d", il->nodeType);
+        return 0;
+    }
+
+    if(il->value != value) {
+        printfError("il->value not %d. got=%d", value, il->value);
+        return 0;
+    }
+
+    if(atoi(TokenLiteral(il)) != value) {
+        printfError("il.TokenLiteral not %d. got=%s", value, TokenLiteral(il));
+        return 0;
+    }
+
+    return 1;
+}
+
+void TestParsingPrefixExpressions() {
+    char* input[2] = { "!5;", "-15;" };
+    char* operator[2] = { "!", "-" };
+    int value[2] = { 5, 15 };
+
+    for(int i = 0; i < 2; i++) {
+        Lexer* l = newLexer(input[i]);
+        Parser* p = newParser(l);
+        
+        Program* program = parseProgram(p);
+        checkParserErrors(p);
+
+        if(program->len != 1) {
+            printfError("program.Statements does not contain %d statements. got=%d\n",
+                    1, program->len);
+        }
+
+        ExpressionStatement* stmt = (ExpressionStatement*)(program->statements[0]);
+        if(stmt->nodeType != NC_EXPRESSION_STATEMENT) {
+            printfError("stmt is not ast.PrefixExpression. got=%s",
+                    ToString((Node*)stmt));
+        }
+
+        PrefixExpression* exp = (PrefixExpression*)(stmt->expression);
+        if(exp->nodeType != NC_PREFIX_EXPRESSION) {
+            printfError("stmt is not ast.PrefixExpression. got=%d",
+                    exp->nodeType);
+        }
+
+        if(strcmp(exp->op, operator[i])) {
+            printfError("exp.op is not '%s'. got=%s",
+                    operator[i], exp->op);
+        }
+
+        if(!testIntegerLiteral(exp->right, value[i])) {
+            return;
+        }
     }
 
     printf("test ok\n");
@@ -469,11 +531,12 @@ void Init() {
 
 int main() {
     Init();
-    TestNextToken();
-    TestLetStatements();
-    TestReturnStatements();
+    //TestNextToken();
+    //TestLetStatements();
+    //TestReturnStatements();
     //TestString();
-    TestIdentifierExpression();
-    TestIntegerLiteralExpression();
+    //TestIdentifierExpression();
+    //TestIntegerLiteralExpression();
+    TestParsingPrefixExpressions();
     return 0;
 }
