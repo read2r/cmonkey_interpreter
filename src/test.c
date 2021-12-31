@@ -347,7 +347,7 @@ void TestReturnStatements() {
         NodeType nt = returnStmt->nodeType;
         if(nt != NC_RETURN_STATEMENT) {
             printfError("stmt not ReturnStatement. got=%s\n", 
-                    NodeTypeString[returnStmt->nodeType]);
+                    getNodeTypeString(returnStmt->nodeType));
             continue;
         }
 
@@ -394,8 +394,8 @@ void TestIdentifierExpression() {
 
     ExpressionStatement* es = (ExpressionStatement*)program->statements[0];
     if(es->nodeType != NC_EXPRESSION_STATEMENT) {
-        printfError("program.Statements[0] is not ExpressionStatement. got=%d",
-                es->nodeType);
+        printfError("program.Statements[0] is not ExpressionStatement. got=%s",
+                getNodeTypeString(es->nodeType));
         exit(1);
     }
 
@@ -424,7 +424,7 @@ void TestIntegerLiteralExpression() {
     Lexer* l = newLexer(input);
     Parser* p = newParser(l);
 
-    Program* program = newProgram(p);
+    Program* program = parseProgram(p);
     checkParserErrors(p);
 
     if(program->len != 1) {
@@ -433,12 +433,32 @@ void TestIntegerLiteralExpression() {
         exit(1);
     }
 
-    ExpressionStatement* es = (ExpressionStatement*)(program->statements[0]);
-    if(es->nodeType == NC_EXPRESSION_STATEMENT) {
-        printfError("program.Statements[0] is not ExpressionStatement. got=%d",
-                program->statements[0]->nodeType);
+    ExpressionStatement* stmt = (ExpressionStatement*)(program->statements[0]);
+    if(stmt->nodeType != NC_EXPRESSION_STATEMENT) {
+        printfError("program.Statements[0] is not ExpressionStatement. got=%s",
+                getNodeTypeString(program->statements[0]->nodeType));
         exit(1);
     }
+
+    IntegerLiteral* literal = (IntegerLiteral*)(stmt->expression);
+    if(literal->nodeType != NC_INTEGER_LITERAL) {
+        printfError("exp not IntegerLiteral. got=%s", 
+                getNodeTypeString(literal->nodeType));
+        exit(1);
+    }
+
+    if(literal->value != 5) {
+        printfError("literal.value not %d. got=%d", 5, literal->value);
+        exit(1);
+    }
+
+    if(strcmp(TokenLiteral((Node*)literal), "5")) {
+        printf("literal.TokenLiteral not %s. got=%s", "5",
+                TokenLiteral((Node*)literal));
+        exit(1);
+    }
+
+    printf("test ok\n");
 }
 
 void Init() {
@@ -454,5 +474,6 @@ int main() {
     TestReturnStatements();
     //TestString();
     TestIdentifierExpression();
+    TestIntegerLiteralExpression();
     return 0;
 }

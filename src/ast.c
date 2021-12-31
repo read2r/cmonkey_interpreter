@@ -44,11 +44,8 @@ void writeString(Buffer* buf, const char* str) {
 }
 
 char* ToString_IntegerLiteral(Node* node) {
-    IntegerLiteral* il = (IntegerLiteral*)node;
     Buffer* buf = newBuffer();
-
     writeString(buf, TokenLiteral(node));
-
     return ToString_Buffer(buf);
 }
 
@@ -194,6 +191,10 @@ IntegerLiteral* newIntegerLiteral() {
     il->nodeType = NC_INTEGER_LITERAL;
     il->token = NULL;
     return il;
+}
+
+char* getNodeTypeString(NodeType nodeType) {
+    return NodeTypeString[nodeType];
 }
 
 void InitTokenLiteralList() {

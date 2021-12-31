@@ -4,7 +4,7 @@
 #include "ast.h"
 #include "token.h"
 
-void registerPreifix(Parser* p, TokenType tokenType, prefixParseFn fn) {
+void registerPrefix(Parser* p, TokenType tokenType, prefixParseFn fn) {
     p->prefixParseFns[tokenType] = fn;
 }
 
@@ -36,7 +36,10 @@ int expectPeek(Parser* p, TokenType tokenType) {
 }
 
 Expression* parseIntegerLiteral(Parser* p) {
-    IntegerLiteral* lit = newIntegerLiteral();
+    IntegerLiteral* il = newIntegerLiteral();
+    il->token = p->curToken;
+    il->value = atoi(p->curToken->literal);
+    return (Expression*)il;
 }
 
 Expression* parseIdentifier(Parser* p) {
@@ -149,7 +152,8 @@ Parser* newParser(Lexer* l) {
     parseNextToken(p);
     parseNextToken(p);
 
-    registerPreifix(p, TOKEN_IDENT, parseIdentifier);
+    registerPrefix(p, TOKEN_IDENT, parseIdentifier);
+    registerPrefix(p, TOKEN_INT, parseIntegerLiteral);
 
     return p;
 }

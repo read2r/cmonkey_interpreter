@@ -2,7 +2,6 @@
 #define __TOKEN_H__
 
 #define STR_SIZE 128 
-#define TOKENTYPES_LEN 100
 #define KEYWORDS_LEN 100
 
 typedef enum _TokenType{
@@ -56,7 +55,6 @@ typedef struct _Keywords {
     int len;
     Keyword* arr[KEYWORDS_LEN];
 } Keywords;
-
 
 Keywords* KEYWORDS;
 char* TokenTypeStringList[100];

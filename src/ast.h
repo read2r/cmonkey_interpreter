@@ -98,4 +98,6 @@ void InitTokenLiteralList();
 char* TokenLiteral(Node* node);
 void appendStatement(Program* program, Statement* stmt);
 
+char* getNodeTypeString(NodeType);
+
 #endif
