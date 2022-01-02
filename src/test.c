@@ -523,10 +523,122 @@ void TestParsingPrefixExpressions() {
     printf("test ok\n");
 }
 
+void TestParsingInfixExpressions() {
+    char* input[8] = {
+        "5 + 5;",
+        "5 - 5;",
+        "5 * 5;",
+        "5 / 5;",
+        "5 > 5;",
+        "5 < 5;",
+        "5 == 5;",
+        "5 != 5;",
+    };
+    char* operator[8] = {
+        "+",
+        "-",
+        "*",
+        "/",
+        ">",
+        "<",
+        "==",
+        "!=",
+    };
+    int leftValue = 5;
+    int rightValue = 5;
+
+    for(int i = 0; i < 8; i++) {
+        Lexer* l = newLexer(input[i]);
+        Parser* p = newParser(l);
+        Program* program = parseProgram(p);
+        checkParserErrors(p);
+
+        if(program->len != 1) {
+            printfError("program.statements does not contain %d statments. got=%d\n",
+                    1, program->len);
+            exit(1);
+        }
+
+        ExpressionStatement* stmt = (ExpressionStatement*)program->statements[0];
+        if(stmt->nodeType != NC_EXPRESSION_STATEMENT) {
+            printfError("program.statements[0] is not ExpressionStatement. got=%s",
+                    getNodeTypeString(stmt->nodeType));
+            exit(1);
+        }
+
+        InfixExpression* ie = (InfixExpression*)(stmt->expression);
+        if(ie->nodeType != NC_INFIX_EXPRESSION) {
+            printfError("exp is not InfixExpression. got=%d",
+                    ie->nodeType);
+            exit(1);
+        }
+
+        if(!testIntegerLiteral(ie->left, leftValue)) {
+            return;
+        }
+
+        if(strcmp(ie->op,operator[i])) {
+            printfError("ie.op is not '%s'. got=%s", operator[i], ie->op);
+            exit(1);
+        }
+
+        if(!testIntegerLiteral(ie->right, rightValue)) {
+            return;
+        }
+    }
+
+    printf("test ok\n");
+}
+
+void TestOperatorPrecedenceParsing() {
+    char* input[12] = {
+        "-a * b",
+        "!-a",
+        "a + b + c",
+        "a + b - c",
+        "a * b * c",
+        "a * b / c",
+        "a + b / c",
+        "a + b * c + d / e - f",
+        "3 + 4; -5 * 5",
+        "5 > 4 == 3 < 4",
+        "5 < 4 != 3 > 4",
+        "3 + 4 * 5 == 3 * 1 + 4 * 5",
+    };
+    char* result[12] = {
+        "((-a) * b)",
+        "(!(-a))",
+        "((a + b) + c)",
+        "((a + b) - c)",
+        "((a * b) * c)",
+        "((a * b) / c)",
+        "(a + (b / c))",
+        "(((a + (b * c)) + (d / e)) - f)",
+        "(3 + 4)((-5) * 5)",
+        "((5 > 4) == (3 < 4))",
+        "((5 < 4) != (3 > 4))",
+        "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))",
+    };
+
+    for(int i = 0; i < 12; i++) {
+        Lexer* l = newLexer(input[i]);
+        Parser* p = newParser(l);
+        Program* program = parseProgram(p);
+
+        char* programString = ToString(program);
+        if(strcmp(programString, result[i])) {
+            fprintf(stderr, "expected=%s got=%s\n", result[i], programString);
+            abort();
+        }
+    }
+
+    printf("test ok\n");
+}
+
 void Init() {
-    InitializeTokenTypes();
-    InitializeKeywords();
-    InitTokenLiteralList();
+    InitToken();
+    InitAST();
+    InitParser();
 }
 
 int main() {
@@ -537,6 +649,8 @@ int main() {
     //TestString();
     //TestIdentifierExpression();
     //TestIntegerLiteralExpression();
-    TestParsingPrefixExpressions();
+    //TestParsingPrefixExpressions();
+    //TestParsingInfixExpressions();
+    TestOperatorPrecedenceParsing();
     return 0;
 }

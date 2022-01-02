@@ -71,3 +71,8 @@ TokenType LookupIdent(char* ident) {
     }
     return TOKEN_IDENT;
 }
+
+void InitToken() {
+    InitializeTokenTypes();
+    InitializeKeywords();
+}

@@ -17,6 +17,7 @@ typedef enum _NodeCode {
     NC_EXPRESSION_STATEMENT,
     NC_INTEGER_LITERAL,
     NC_PREFIX_EXPRESSION,
+    NC_INFIX_EXPRESSION,
 } NodeType;
 
 typedef struct _Node {
@@ -59,6 +60,15 @@ typedef struct _PrefixExpression {
     Expression* right;
 } PrefixExpression;
 
+// Expression
+typedef struct _InfixExpression {
+    NodeType nodeType;
+    Token* token;
+    Expression* left;
+    char* op;
+    Expression* right;
+} InfixExpression;
+
 // Statement
 typedef struct _LetStatement {
     NodeType nodeType;
@@ -96,11 +106,13 @@ ReturnStatement* newReturnStatement();
 ExpressionStatement* newExpressionStatement();
 IntegerLiteral* newIntegerLiteral();
 PrefixExpression* newPrefixExpression();
+InfixExpression* newInfixExpression();
 
 fptrTokenLiteral TokenLiteralList[100];
 fptrToString ToStringList[100];
 char* NodeTypeString[100];
 
+void InitAST();
 void InitToStringList();
 void InitTokenLiteralList();
 

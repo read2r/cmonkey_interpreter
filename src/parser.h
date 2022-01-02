@@ -5,8 +5,12 @@
 #include "ast.h"
 #include "merr.h"
 
-typedef Expression* (*prefixParseFn)();
-typedef Expression* (*infixParseFn)(Expression*);
+#define PREFIX_PARSE_FN_LEN 32
+#define INFIX_PARSE_FN_LEN 32
+#define PRECEDENCE_LEN 16
+
+typedef Expression* (*prefixParseFn)(void*);
+typedef Expression* (*infixParseFn)(void*, Expression*);
 
 typedef struct Parser {
     Lexer* l;
@@ -15,8 +19,8 @@ typedef struct Parser {
     Token* curToken;
     Token* peekToken;
 
-    prefixParseFn prefixParseFns[100];
-    infixParseFn infixParseFns[100];
+    prefixParseFn prefixParseFns[PREFIX_PARSE_FN_LEN];
+    infixParseFn infixParseFns[INFIX_PARSE_FN_LEN];
 } Parser;
 
 typedef enum _Precedence {
@@ -29,8 +33,12 @@ typedef enum _Precedence {
     PR_CALL,
 } Precedence;
 
+extern int precedences[PRECEDENCE_LEN];
+
 Parser* newParser(Lexer* l);
 void parseNextToken(Parser* p);
 Program* parseProgram(Parser* p);
+void InitParser();
+void InitPrecedences();
 
 #endif

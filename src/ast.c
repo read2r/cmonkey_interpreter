@@ -111,6 +111,21 @@ char* ToString_PrefixExpression(Node* node) {
     return ToString_Buffer(buf);
 }
 
+char* ToString_InfixExpression(Node* node) {
+    InfixExpression* ie = (InfixExpression*)node;
+    Buffer* buf = newBuffer();
+
+    writeString(buf, "(");
+    writeString(buf, ToString(ie->left));
+    writeString(buf, " ");
+    writeString(buf, ie->op);
+    writeString(buf, " ");
+    writeString(buf, ToString(ie->right));
+    writeString(buf, ")");
+
+    return ToString_Buffer(buf);
+}
+
 char* ToString_Program(Node* node) {
     Program* p = (Program*)node;
     Buffer* buf = newBuffer();
@@ -149,6 +164,11 @@ char* TokenLiteral_LetStatement(Node* node) {
 
 char* TokenLiteral_PrefixExpression(Node* node) {
     PrefixExpression* pe = (PrefixExpression*)node;
+    return pe->token->literal;
+}
+
+char* TokenLiteral_InfixExpression(Node* node) {
+    InfixExpression* pe = (InfixExpression*)node;
     return pe->token->literal;
 }
 
@@ -217,17 +237,22 @@ PrefixExpression* newPrefixExpression() {
     return pe;
 }
 
+InfixExpression* newInfixExpression() {
+    InfixExpression* ie = (InfixExpression*)malloc(sizeof(InfixExpression));
+    ie->nodeType = NC_INFIX_EXPRESSION;
+    ie->left = NULL;
+    ie->op = NULL;
+    ie->right = NULL;
+    return ie;
+}
+
 char* getNodeTypeString(NodeType nodeType) {
     return NodeTypeString[nodeType];
 }
 
 void InitTokenLiteralList() {
-    for(int i = 0; i < 0; i++) {
+    for(int i = 0; i < 100; i++)
         TokenLiteralList[i] = NULL;
-        NodeTypeString[i] = NULL;
-        ToStringList[i] = NULL;
-    }
-
     TokenLiteralList[NC_PROGRAM] = TokenLiteral_Program; 
     TokenLiteralList[NC_LET_STATEMENT] = TokenLiteral_LetStatement;
     TokenLiteralList[NC_IDENTIFIER] = TokenLiteral_Identifier;
@@ -235,7 +260,12 @@ void InitTokenLiteralList() {
     TokenLiteralList[NC_EXPRESSION_STATEMENT] = TokenLiteral_ExpressionStatement;
     TokenLiteralList[NC_INTEGER_LITERAL] = TokenLiteral_IntergerLiteral;
     TokenLiteralList[NC_PREFIX_EXPRESSION] = TokenLiteral_PrefixExpression;
+    TokenLiteralList[NC_INFIX_EXPRESSION] = TokenLiteral_InfixExpression;
+}
 
+void InitNodetypeString() {
+    for(int i = 0; i < 100; i++)
+        NodeTypeString[i] = NULL;
     NodeTypeString[NC_PROGRAM] = "Program";
     NodeTypeString[NC_LET_STATEMENT] = "LetStatement";
     NodeTypeString[NC_IDENTIFIER] = "Identifier";
@@ -243,7 +273,12 @@ void InitTokenLiteralList() {
     NodeTypeString[NC_EXPRESSION_STATEMENT] = "ExpressionStatement";
     NodeTypeString[NC_INTEGER_LITERAL] = "IntegerLiteral";
     NodeTypeString[NC_PREFIX_EXPRESSION] = "PrefixExpression";
+    NodeTypeString[NC_INFIX_EXPRESSION] = "InfixExpression";
+}
 
+void InitToStringList() {
+    for(int i = 0; i < 100; i++)
+        ToStringList[i] = NULL;
     ToStringList[NC_PROGRAM] = ToString_Program;
     ToStringList[NC_LET_STATEMENT] = ToString_LetStatement;
     ToStringList[NC_IDENTIFIER] = ToString_Identifier;
@@ -251,6 +286,13 @@ void InitTokenLiteralList() {
     ToStringList[NC_EXPRESSION_STATEMENT] = ToString_ExpressionStatement;
     ToStringList[NC_INTEGER_LITERAL] = ToString_IntegerLiteral;
     ToStringList[NC_PREFIX_EXPRESSION] = ToString_PrefixExpression;
+    ToStringList[NC_INFIX_EXPRESSION] = ToString_InfixExpression;
+}
+
+void InitAST() {
+    InitTokenLiteralList();
+    InitNodetypeString();
+    InitToStringList();
 }
 
 char* _TokenLiteral(Node* node) {

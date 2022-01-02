@@ -1,7 +1,6 @@
 #ifndef __TOKEN_H__
 #define __TOKEN_H__
 
-#define STR_SIZE 128 
 #define KEYWORDS_LEN 100
 
 typedef enum _TokenType{
@@ -60,6 +59,7 @@ Keywords* KEYWORDS;
 char* TokenTypeStringList[100];
 
 char* getTokenTypeString();
+void InitToken();
 void InitializeTokenTypes();
 void InitializeKeywords();
 TokenType LookupIdent(char* ident);

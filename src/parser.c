@@ -1,14 +1,32 @@
+#include <stdio.h>
 #include <stdlib.h>
+
 #include "merr.h"
 #include "parser.h"
 #include "ast.h"
 #include "token.h"
 
+int precedences[PRECEDENCE_LEN];
+
+int peekPrecedence(Parser* p) {
+    if(precedences[p->peekToken->tokenType] != -1) {
+        return precedences[p->peekToken->tokenType];
+    }
+    return PR_LOWEST;
+}
+
+int curPrecedence(Parser* p) {
+    if(precedences[p->curToken->tokenType] != -1) {
+        return precedences[p->curToken->tokenType];
+    }
+    return PR_LOWEST;
+}
+
 void registerPrefix(Parser* p, TokenType tokenType, prefixParseFn fn) {
     p->prefixParseFns[tokenType] = fn;
 }
 
-void registerInfix(Parser* p, TokenType tokenType, prefixParseFn fn) {
+void registerInfix(Parser* p, TokenType tokenType, infixParseFn fn) {
     p->infixParseFns[tokenType] = fn;
 }
 
@@ -72,7 +90,6 @@ LetStatement* parseLetStatement(Parser* p) {
 
 ReturnStatement* parseReturnStatement(Parser* p) {
     ReturnStatement* rstmt = newReturnStatement();
-    rstmt->nodeType = NC_RETURN_STATEMENT;
     rstmt->token = p->curToken;
 
     parseNextToken(p);
@@ -97,9 +114,35 @@ Expression* parseExpression(Parser* p, Precedence precedence) {
         noPrefixParseFnError(p, p->curToken->tokenType);
         return NULL;
     }
+
     Expression* leftExp = prefix(p);
 
+    while(!peekTokenIs(p, TOKEN_SEMICOLON) && precedence < peekPrecedence(p)) {
+        infixParseFn infix = p->infixParseFns[p->peekToken->tokenType];
+        
+        if(infix == NULL) {
+            return leftExp;
+        }
+
+        parseNextToken(p);
+
+        leftExp = infix(p, leftExp);
+    }
+
     return leftExp;
+}
+
+Expression* parseInfixExpression(Parser* p, Expression* left) {
+    InfixExpression* ie = newInfixExpression();
+    ie->token = p->curToken;
+    ie->op = p->curToken->literal;
+    ie->left = left;
+
+    int precedence = curPrecedence(p);
+    parseNextToken(p);
+    ie->right = parseExpression(p, precedence);
+
+    return (Expression*)ie;
 }
 
 Expression* parsePrefixExpression(Parser* p) {
@@ -166,15 +209,39 @@ Parser* newParser(Lexer* l) {
     parseNextToken(p);
     parseNextToken(p);
 
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < PREFIX_PARSE_FN_LEN; i++) {
         p->prefixParseFns[i] = NULL;
         p->infixParseFns[i] = NULL;
     }
 
-    registerPrefix(p, TOKEN_IDENT, parseIdentifier);
-    registerPrefix(p, TOKEN_INT, parseIntegerLiteral);
-    registerPrefix(p, TOKEN_BANG, parsePrefixExpression);
-    registerPrefix(p, TOKEN_MINUS, parsePrefixExpression);
+    registerPrefix(p, TOKEN_IDENT, (prefixParseFn)parseIdentifier);
+    registerPrefix(p, TOKEN_INT, (prefixParseFn)parseIntegerLiteral);
+    registerPrefix(p, TOKEN_BANG, (prefixParseFn)parsePrefixExpression);
+    registerPrefix(p, TOKEN_MINUS, (prefixParseFn)parsePrefixExpression);
+
+    registerInfix(p, TOKEN_PLUS, (infixParseFn)parseInfixExpression);
+    registerInfix(p, TOKEN_MINUS, (infixParseFn)parseInfixExpression);
+    registerInfix(p, TOKEN_SLASH, (infixParseFn)parseInfixExpression);
+    registerInfix(p, TOKEN_ASTERISK, (infixParseFn)parseInfixExpression);
+    registerInfix(p, TOKEN_EQ, (infixParseFn)parseInfixExpression);
+    registerInfix(p, TOKEN_NOT_EQ, (infixParseFn)parseInfixExpression);
+    registerInfix(p, TOKEN_LT, (infixParseFn)parseInfixExpression);
+    registerInfix(p, TOKEN_GT, (infixParseFn)parseInfixExpression);
 
     return p;
+}
+
+void InitPrecedences() {
+    precedences[TOKEN_EQ] = PR_EQUALS;
+    precedences[TOKEN_NOT_EQ] = PR_EQUALS;
+    precedences[TOKEN_LT] = PR_LESSGREATER;
+    precedences[TOKEN_GT] = PR_LESSGREATER;
+    precedences[TOKEN_PLUS] = PR_SUM;
+    precedences[TOKEN_MINUS] = PR_SUM;
+    precedences[TOKEN_SLASH] = PR_PRODUCT;
+    precedences[TOKEN_ASTERISK] = PR_PRODUCT;
+}
+
+void InitParser() {
+    InitPrecedences();
 }
